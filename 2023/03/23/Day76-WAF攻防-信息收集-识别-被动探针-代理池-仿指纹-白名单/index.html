@@ -1,0 +1,223 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Day76 WAF攻防-信息收集&amp;识别&amp;被动探针&amp;代理池&amp;仿指纹&amp;白名单 | ai潼</title><meta name="author" content="pwy"><meta name="copyright" content="pwy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="#知识点：1、WAF介绍&amp;模式&amp;识别&amp;防护等 2、信息收集-被动扫描&amp;第三方接口 3、信息收集-基于爬虫&amp;文件目录探针 4、信息收集-基于用户&amp;代理池&amp;白名单 #章节点：WAF绕过主要集中在信息收集，漏洞发现，漏洞利用，权限控制四个阶段。 #补充点：1、什么是WAF？Web Application Firewall（web应用防火墙），一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Day76 WAF攻防-信息收集&amp;识别&amp;被动探针&amp;代理池&amp;仿指纹&amp;白名单">
+<meta property="og:url" content="http://example.com/2023/03/23/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/index.html">
+<meta property="og:site_name" content="ai潼">
+<meta property="og:description" content="#知识点：1、WAF介绍&amp;模式&amp;识别&amp;防护等 2、信息收集-被动扫描&amp;第三方接口 3、信息收集-基于爬虫&amp;文件目录探针 4、信息收集-基于用户&amp;代理池&amp;白名单 #章节点：WAF绕过主要集中在信息收集，漏洞发现，漏洞利用，权限控制四个阶段。 #补充点：1、什么是WAF？Web Application Firewall（web应用防火墙），一">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://picx.zhimg.com/80/52937ba23d917f69c5828cfed2a704a2_1440w.webp?source=1940ef5c">
+<meta property="article:published_time" content="2023-03-23T08:47:35.000Z">
+<meta property="article:modified_time" content="2023-03-23T12:13:03.384Z">
+<meta property="article:author" content="pwy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://picx.zhimg.com/80/52937ba23d917f69c5828cfed2a704a2_1440w.webp?source=1940ef5c"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/03/23/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Day76 WAF攻防-信息收集&识别&被动探针&代理池&仿指纹&白名单',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-03-23 20:13:03'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="ai潼" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tt.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://picx.zhimg.com/80/52937ba23d917f69c5828cfed2a704a2_1440w.webp?source=1940ef5c')"><nav id="nav"><span id="blog-info"><a href="/" title="ai潼"><span class="site-name">ai潼</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Day76 WAF攻防-信息收集&amp;识别&amp;被动探针&amp;代理池&amp;仿指纹&amp;白名单</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-03-23T08:47:35.000Z" title="发表于 2023-03-23 16:47:35">2023-03-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-03-23T12:13:03.384Z" title="更新于 2023-03-23 20:13:03">2023-03-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/WAF%E6%94%BB%E9%98%B2/">WAF攻防</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Day76 WAF攻防-信息收集&amp;识别&amp;被动探针&amp;代理池&amp;仿指纹&amp;白名单"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><img src="/../images/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/k6WhoSjwnthxzJ7Bbz0z9w.png" alt="img"></p>
+<p><img src="/../images/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/Amxzx2zGAlrS3bYdMQAkaw.png" alt="img"></p>
+<h3 id="知识点："><a href="#知识点：" class="headerlink" title="#知识点："></a>#知识点：</h3><p>1、WAF介绍&amp;模式&amp;识别&amp;防护等</p>
+<p>2、信息收集-被动扫描&amp;第三方接口</p>
+<p>3、信息收集-基于爬虫&amp;文件目录探针</p>
+<p>4、信息收集-基于用户&amp;代理池&amp;白名单</p>
+<h3 id="章节点："><a href="#章节点：" class="headerlink" title="#章节点："></a>#章节点：</h3><p>WAF绕过主要集中在信息收集，漏洞发现，漏洞利用，权限控制四个阶段。</p>
+<h3 id="补充点："><a href="#补充点：" class="headerlink" title="#补充点："></a>#补充点：</h3><h4 id="1、什么是WAF？"><a href="#1、什么是WAF？" class="headerlink" title="1、什么是WAF？"></a>1、什么是WAF？</h4><p>Web Application Firewall（web应用防火墙），一种公认的说法是“web应用防火墙通过执行一系列针对HTTP&#x2F;HTTPS的安全策略来专门为web应用提供保护的一款产品。</p>
+<p>基本可以分为以下4种</p>
+<h5 id="软件型WAF"><a href="#软件型WAF" class="headerlink" title="软件型WAF"></a>软件型WAF</h5><p>以软件的形式安装在服务器上面，可以接触到服务器上的文件，因此就可以检测服务器上是否有webshell，是否有文件被创建等。</p>
+<h5 id="硬件型WAF"><a href="#硬件型WAF" class="headerlink" title="硬件型WAF"></a>硬件型WAF</h5><p>以硬件形式部署在链路中，支持多种部署方式。当串联到链路上时可以拦截恶意流量，在旁路监听模式时只记录攻击但是不进行拦截。</p>
+<h5 id="云-WAF"><a href="#云-WAF" class="headerlink" title="云 WAF"></a>云 WAF</h5><p>一般以反向代理的形式工作，通过配置后，使对网站的请求数据优先经过WAF主机，在WAF主机对数据进行过滤后再传给服务器</p>
+<h5 id="网站内置的WAF"><a href="#网站内置的WAF" class="headerlink" title="网站内置的WAF"></a>网站内置的WAF</h5><p>就是来自网站内部的过滤，直接出现在网站代码中，比如说对输入的参数强制类转换啊，对输入的参数进行敏感词检测啊什么的</p>
+<h4 id="2、如何判断WAF？"><a href="#2、如何判断WAF？" class="headerlink" title="2、如何判断WAF？"></a>2、如何判断WAF？</h4><h5 id="Wafw00f，看图识别，其他项目脚本平台"><a href="#Wafw00f，看图识别，其他项目脚本平台" class="headerlink" title="Wafw00f，看图识别，其他项目脚本平台"></a>Wafw00f，看图识别，其他项目脚本平台</h5><p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/3uUZKryCufQ_HcuMc8ZgQQ">https://mp.weixin.qq.com/s/3uUZKryCufQ_HcuMc8ZgQQ</a></p>
+<h4 id="3、常见WAF拓扑-amp-防护？"><a href="#3、常见WAF拓扑-amp-防护？" class="headerlink" title="3、常见WAF拓扑&amp;防护？"></a>3、常见WAF拓扑&amp;防护？</h4><p>见上图流量走向&amp;常见漏洞</p>
+<h4 id="4、目前有哪些常见WAF产品？"><a href="#4、目前有哪些常见WAF产品？" class="headerlink" title="4、目前有哪些常见WAF产品？"></a>4、目前有哪些常见WAF产品？</h4><p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/w2sft/article/details/104533082/">https://blog.csdn.net/w2sft/article/details/104533082/</a></p>
+<h6 id="①-硬件型"><a href="#①-硬件型" class="headerlink" title="① 硬件型"></a>① 硬件型</h6><p>硬件型WAF以一个独立的硬件设备的形态存在，支持以多种方式（如透明桥接模式、旁路模式、反向代理等）部署到网络中为后端的Web应用提供安全防护，是最为传统的WAF型态，在受访企业中部署占比为35.2%。相对于软件产品类的WAF，这类产品的优点是性能好、功能全面、支持多种模式部署等，但它的价格通常比较贵。国内的绿盟、安恒、启明星辰等老牌厂商旗下的WAF都属于此类。</p>
+<h6 id="②-软件型"><a href="#②-软件型" class="headerlink" title="② 软件型"></a>② 软件型</h6><p>这种类型的WAF采用纯软件的方式实现，特点是安装简单，容易使用，成本低。但它的缺点也是显而易见的，除了性能受到限制外，还可能会存在兼容性、安全等问题。这类WAF的代表有ModSecurity、Naxsi、ShareWAF、安全狗等。</p>
+<h6 id="③-云WAF"><a href="#③-云WAF" class="headerlink" title="③ 云WAF"></a>③ 云WAF</h6><p>随着云计算技术的快速发展，使得基于云的WAF实现成为可能，在本次调查中占比甚至超过了传统的硬件WAF跃升为第一位，达到39.4%。阿里云、腾讯云、深信服云WAF、Imperva WAF是这类WAF的典型代表。</p>
+<blockquote>
+<p>演示案例：</p>
+<p>​                ➢ 信息收集-被动扫描-黑暗引擎&amp;三方接口</p>
+<p>​                ➢ 信息收集-目录扫描-Python代理加载脚本</p>
+<p>​                ➢ 信息收集-爬虫扫描-Awvs&amp;Xray&amp;Goby内置</p>
+</blockquote>
+<h4 id="信息收集常见检测："><a href="#信息收集常见检测：" class="headerlink" title="#信息收集常见检测："></a>#信息收集常见检测：</h4><p>1、脚本或工具速度流量快</p>
+<p>2、脚本或工具的指纹被识别</p>
+<p>3、脚本或工具的检测Payload</p>
+<h4 id="信息收集常见方法："><a href="#信息收集常见方法：" class="headerlink" title="#信息收集常见方法："></a>#信息收集常见方法：</h4><p>1、延迟：解决请求过快封IP的情况</p>
+<p>2、代理池：在确保速度的情况下解决请求过快封IP的拦截</p>
+<p>3、白名单：模拟白名单模拟WAF授权测试，解决速度及测试拦截</p>
+<p>4、模拟用户：模拟真实用户数据包请求探针，解决WAF指纹识别</p>
+<h4 id="信息收集-被动扫描-黑暗引擎-amp-三方接口"><a href="#信息收集-被动扫描-黑暗引擎-amp-三方接口" class="headerlink" title="#信息收集-被动扫描-黑暗引擎&amp;三方接口"></a>#信息收集-被动扫描-黑暗引擎&amp;三方接口</h4><p>黑暗引擎：Fofa Quake Shodan zoomeye 0.zone等</p>
+<p>其他接口：<a target="_blank" rel="noopener" href="https://forum.ywhack.com/bountytips.php?getinfo">https://forum.ywhack.com/bountytips.php?getinfo</a></p>
+<h4 id="信息收集-目录扫描-Python代理加载脚本"><a href="#信息收集-目录扫描-Python代理加载脚本" class="headerlink" title="#信息收集-目录扫描-Python代理加载脚本"></a>#信息收集-目录扫描-Python代理加载脚本</h4><p>7kb不能用代理</p>
+<p><img src="/../images/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/image-20230323181620752.png"></p>
+<p>采用Proxifier</p>
+<p><img src="/../images/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/image-20230323181751641.png" alt="image-20230323181751641"></p>
+<p>正常运行</p>
+<p><img src="/../images/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/image-20230323181820456.png" alt="image-20230323181820456"></p>
+<p>配置代理规则</p>
+<p><img src="/../images/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/image-20230323181902338.png" alt="image-20230323181902338"></p>
+<p>发现工具怎么都扫不出来，即使是实际存在的文件</p>
+<p><img src="/../images/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/image-20230323182321123.png" alt="image-20230323182321123"></p>
+<p>这里手工访问，是实际存在的文件，却扫不出来</p>
+<p><img src="/../images/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/image-20230323182414092.png" alt="image-20230323182414092"></p>
+<p>用脚本扫描可模拟用户访问，防止被封</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">headers=&#123;</span><br><span class="line">​    <span class="string">&#x27;Connection&#x27;</span>: <span class="string">&#x27;keep-alive&#x27;</span>,</span><br><span class="line">​    <span class="string">&#x27;Cache-Control&#x27;</span>: <span class="string">&#x27;max-age=0&#x27;</span>,</span><br><span class="line">​    <span class="string">&#x27;Upgrade-Insecure-Requests&#x27;</span>: <span class="string">&#x27;1&#x27;</span>,</span><br><span class="line">​    <span class="string">&#x27;User-Agent&#x27;</span>: <span class="string">&#x27;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36&#x27;</span>,</span><br><span class="line">​    <span class="string">&#x27;Sec-Fetch-Dest&#x27;</span>: <span class="string">&#x27;document&#x27;</span>,</span><br><span class="line">​    <span class="string">&#x27;Accept&#x27;</span>: <span class="string">&#x27;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9&#x27;</span>,</span><br><span class="line">​    <span class="string">&#x27;Sec-Fetch-Site&#x27;</span>: <span class="string">&#x27;none&#x27;</span>,</span><br><span class="line">​    <span class="string">&#x27;Sec-Fetch-Mode&#x27;</span>: <span class="string">&#x27;navigate&#x27;</span>,</span><br><span class="line">​    <span class="string">&#x27;Sec-Fetch-User&#x27;</span>: <span class="string">&#x27;?1&#x27;</span>,</span><br><span class="line">​    <span class="string">&#x27;Accept-Encoding&#x27;</span>: <span class="string">&#x27;gzip, deflate, br&#x27;</span>,</span><br><span class="line">​    <span class="string">&#x27;Accept-Language&#x27;</span>: <span class="string">&#x27;zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;Cookie&#x27;</span>: <span class="string">&#x27;bdshare_firstime=1581597934650; PHPSESSID=ncsajdvh39qse0qlsgqokshuc4; yx_auth=dc4fq8FAEkyiAUZ54b5zl9GGStCxXoRb1TFaAaozygMiSc5uZYHjR3gCQm%2BtKNz3bcjbTi8BRgcd%2F7LvR0lHN1j319CI6x29Z2QDI38&#x27;</span>,</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> paths <span class="keyword">in</span> <span class="built_in">open</span>(<span class="string">&#x27;php_b.txt&#x27;</span>,encoding=<span class="string">&#x27;utf-8&#x27;</span>):</span><br><span class="line">​    url=<span class="string">&#x27;http://www.testxiaodi.fun/&#x27;</span></span><br><span class="line">​    paths=paths.replace(<span class="string">&#x27;\n&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">​    urls=url+paths</span><br><span class="line">​    proxy = &#123;</span><br><span class="line">​        <span class="string">&#x27;http&#x27;</span>: <span class="string">&#x27;tps686.kdlapi.com:15818&#x27;</span>,</span><br><span class="line">​    &#125;</span><br><span class="line"></span><br><span class="line">​    <span class="keyword">try</span>:</span><br><span class="line">​        code=requests.get(urls,headers=headers,proxies=proxy).status_code</span><br><span class="line">​        \<span class="comment">#req=requests.get(urls, headers=headers, proxies=proxy)</span></span><br><span class="line">​        \<span class="comment">#print(urls)</span></span><br><span class="line">​        \<span class="comment">#print(req.text)</span></span><br><span class="line">​        \<span class="comment">#time.sleep()</span></span><br><span class="line">​        <span class="built_in">print</span>(urls+<span class="string">&#x27;|&#x27;</span>+<span class="built_in">str</span>(code))</span><br><span class="line">​        <span class="keyword">if</span> code==<span class="number">200</span> <span class="keyword">or</span> code==<span class="number">403</span>:</span><br><span class="line">​            <span class="built_in">print</span>(urls+<span class="string">&#x27;|&#x27;</span>+<span class="built_in">str</span>(code))</span><br><span class="line">​    <span class="keyword">except</span> Exception <span class="keyword">as</span> err:</span><br><span class="line">​        <span class="built_in">print</span>(<span class="string">&#x27;connecting error&#x27;</span>)</span><br><span class="line">​        time.sleep(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+
+<p>​        </p>
+<h4 id="信息收集-工具扫描-Awvs-amp-Xray-amp-Goby内置"><a href="#信息收集-工具扫描-Awvs-amp-Xray-amp-Goby内置" class="headerlink" title="#信息收集-工具扫描-Awvs&amp;Xray&amp;Goby内置"></a>#信息收集-工具扫描-Awvs&amp;Xray&amp;Goby内置</h4><p>如果扫描网站，假设是安全狗，有cc流量防护，扫描一会就会封ip</p>
+<p><img src="/../images/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/image-20230323195214555.png" alt="image-20230323195214555"></p>
+<p>那么可以将访问UA头改为其白名单，再次扫描的时候不会封ip，可以正常扫描结束，而且可以正常访问网站</p>
+<p><img src="/../images/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/image-20230323195256064.png" alt="image-20230323195256064"></p>
+<h5 id="Awvs-设置速度-amp-加入代理"><a href="#Awvs-设置速度-amp-加入代理" class="headerlink" title="Awvs-设置速度&amp;加入代理"></a>Awvs-设置速度&amp;加入代理</h5><p>Awvs这里可以设置代理池的网址</p>
+<p><img src="/../images/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/image-20230323195516116.png" alt="image-20230323195516116"></p>
+<p>扫描BT时，大部分被拦截</p>
+<p><img src="/../images/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/image-20230323201139833.png" alt="image-20230323201139833"></p>
+<p>经过大量的爬虫，是有一个可以通过</p>
+<p><img src="/../images/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/image-20230323201125492.png" alt="image-20230323201125492"></p>
+<h5 id="Xray-配置修改-amp-进程转发"><a href="#Xray-配置修改-amp-进程转发" class="headerlink" title="Xray-配置修改&amp;进程转发"></a>Xray-配置修改&amp;进程转发</h5><p>1、可以在专有的配置文件里面设置代理地址</p>
+<p><img src="/../images/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/image-20230323195717530.png" alt="image-20230323195717530"></p>
+<p>2、还可以用Proxifier工具实现,一样的效果</p>
+<p><img src="/../images/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/image-20230323195954242.png" alt="image-20230323195954242"></p>
+<h5 id="Goby-配置加入Socket代理"><a href="#Goby-配置加入Socket代理" class="headerlink" title="Goby-配置加入Socket代理"></a>Goby-配置加入Socket代理</h5><p><img src="/../images/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/image-20230323200525162.png" alt="image-20230323200525162"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">pwy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/03/23/Day76-WAF%E6%94%BB%E9%98%B2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%AF%86%E5%88%AB-%E8%A2%AB%E5%8A%A8%E6%8E%A2%E9%92%88-%E4%BB%A3%E7%90%86%E6%B1%A0-%E4%BB%BF%E6%8C%87%E7%BA%B9-%E7%99%BD%E5%90%8D%E5%8D%95/">http://example.com/2023/03/23/Day76-WAF攻防-信息收集-识别-被动探针-代理池-仿指纹-白名单/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">ai潼</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://picx.zhimg.com/80/52937ba23d917f69c5828cfed2a704a2_1440w.webp?source=1940ef5c" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/03/23/Day77-WAF%E6%94%BB%E9%98%B2-%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6-%E4%BB%A3%E7%A0%81%E5%85%8D%E6%9D%80-%E5%BC%82%E6%88%96%E8%BF%90%E7%AE%97-%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96-%E6%B7%B7%E6%B7%86%E5%8A%A0%E5%AF%86-%E4%BC%A0%E5%8F%82/" title="Day77 WAF攻防-权限控制&amp;代码免杀&amp;异或运算&amp;变量覆盖&amp;混淆加密&amp;传参"><img class="cover" src="http://mms0.baidu.com/it/u=261474483,3339222947&amp;fm=253&amp;app=138&amp;f=JPEG&amp;fmt=auto&amp;q=75?w=500&amp;h=352" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Day77 WAF攻防-权限控制&amp;代码免杀&amp;异或运算&amp;变量覆盖&amp;混淆加密&amp;传参</div></div></a></div><div class="next-post pull-right"><a href="/2023/03/20/Day75-%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8-MSF%E6%A1%86%E6%9E%B6-CVE-CNVD-POC-EXP%E7%9B%91%E6%8E%A7-%E6%9F%A5%E6%89%BE-%E6%95%B4%E7%90%86/" title="Day75 漏洞利用-MSF框架&amp;CVE&amp;CNVD&amp;POC&amp;EXP监控&amp;查找&amp;整理"><img class="cover" src="https://pic3.zhimg.com/80/03a813a138edacf54b9996420e70e59a_1440w.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Day75 漏洞利用-MSF框架&amp;CVE&amp;CNVD&amp;POC&amp;EXP监控&amp;查找&amp;整理</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tt.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">pwy</div><div class="author-info__description">自律&上进</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">#知识点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%A0%E8%8A%82%E7%82%B9%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">#章节点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A5%E5%85%85%E7%82%B9%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">#补充点：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AFWAF%EF%BC%9F"><span class="toc-number">3.1.</span> <span class="toc-text">1、什么是WAF？</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E5%9E%8BWAF"><span class="toc-number">3.1.1.</span> <span class="toc-text">软件型WAF</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A1%AC%E4%BB%B6%E5%9E%8BWAF"><span class="toc-number">3.1.2.</span> <span class="toc-text">硬件型WAF</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BA%91-WAF"><span class="toc-number">3.1.3.</span> <span class="toc-text">云 WAF</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BD%91%E7%AB%99%E5%86%85%E7%BD%AE%E7%9A%84WAF"><span class="toc-number">3.1.4.</span> <span class="toc-text">网站内置的WAF</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%ADWAF%EF%BC%9F"><span class="toc-number">3.2.</span> <span class="toc-text">2、如何判断WAF？</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Wafw00f%EF%BC%8C%E7%9C%8B%E5%9B%BE%E8%AF%86%E5%88%AB%EF%BC%8C%E5%85%B6%E4%BB%96%E9%A1%B9%E7%9B%AE%E8%84%9A%E6%9C%AC%E5%B9%B3%E5%8F%B0"><span class="toc-number">3.2.1.</span> <span class="toc-text">Wafw00f，看图识别，其他项目脚本平台</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81%E5%B8%B8%E8%A7%81WAF%E6%8B%93%E6%89%91-amp-%E9%98%B2%E6%8A%A4%EF%BC%9F"><span class="toc-number">3.3.</span> <span class="toc-text">3、常见WAF拓扑&amp;防护？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4%E3%80%81%E7%9B%AE%E5%89%8D%E6%9C%89%E5%93%AA%E4%BA%9B%E5%B8%B8%E8%A7%81WAF%E4%BA%A7%E5%93%81%EF%BC%9F"><span class="toc-number">3.4.</span> <span class="toc-text">4、目前有哪些常见WAF产品？</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E2%91%A0-%E7%A1%AC%E4%BB%B6%E5%9E%8B"><span class="toc-number">3.4.0.1.</span> <span class="toc-text">① 硬件型</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E2%91%A1-%E8%BD%AF%E4%BB%B6%E5%9E%8B"><span class="toc-number">3.4.0.2.</span> <span class="toc-text">② 软件型</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E2%91%A2-%E4%BA%91WAF"><span class="toc-number">3.4.0.3.</span> <span class="toc-text">③ 云WAF</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E5%B8%B8%E8%A7%81%E6%A3%80%E6%B5%8B%EF%BC%9A"><span class="toc-number">3.5.</span> <span class="toc-text">#信息收集常见检测：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">3.6.</span> <span class="toc-text">#信息收集常见方法：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%A2%AB%E5%8A%A8%E6%89%AB%E6%8F%8F-%E9%BB%91%E6%9A%97%E5%BC%95%E6%93%8E-amp-%E4%B8%89%E6%96%B9%E6%8E%A5%E5%8F%A3"><span class="toc-number">3.7.</span> <span class="toc-text">#信息收集-被动扫描-黑暗引擎&amp;三方接口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E7%9B%AE%E5%BD%95%E6%89%AB%E6%8F%8F-Python%E4%BB%A3%E7%90%86%E5%8A%A0%E8%BD%BD%E8%84%9A%E6%9C%AC"><span class="toc-number">3.8.</span> <span class="toc-text">#信息收集-目录扫描-Python代理加载脚本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E5%B7%A5%E5%85%B7%E6%89%AB%E6%8F%8F-Awvs-amp-Xray-amp-Goby%E5%86%85%E7%BD%AE"><span class="toc-number">3.9.</span> <span class="toc-text">#信息收集-工具扫描-Awvs&amp;Xray&amp;Goby内置</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Awvs-%E8%AE%BE%E7%BD%AE%E9%80%9F%E5%BA%A6-amp-%E5%8A%A0%E5%85%A5%E4%BB%A3%E7%90%86"><span class="toc-number">3.9.1.</span> <span class="toc-text">Awvs-设置速度&amp;加入代理</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Xray-%E9%85%8D%E7%BD%AE%E4%BF%AE%E6%94%B9-amp-%E8%BF%9B%E7%A8%8B%E8%BD%AC%E5%8F%91"><span class="toc-number">3.9.2.</span> <span class="toc-text">Xray-配置修改&amp;进程转发</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Goby-%E9%85%8D%E7%BD%AE%E5%8A%A0%E5%85%A5Socket%E4%BB%A3%E7%90%86"><span class="toc-number">3.9.3.</span> <span class="toc-text">Goby-配置加入Socket代理</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/hello-world/" title="Hello World">Hello World</a><time datetime="2023-05-12T15:24:14.066Z" title="发表于 2023-05-12 23:24:14">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day113-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-%E5%86%85%E5%AD%98%E5%8A%A0%E8%BD%BD-API%E5%B0%81%E8%A3%85-UUID%E6%A0%87%E8%AF%86-MAC%E5%9C%B0%E5%9D%80-IPV4%E5%9C%B0%E5%9D%80-%E5%90%84%E8%AF%AD%E8%A8%80/" title="Day113 免杀对抗-内存加载&amp;API封装&amp;UUID标识&amp;MAC地址&amp;IPV4地址&amp;各语言">Day113 免杀对抗-内存加载&amp;API封装&amp;UUID标识&amp;MAC地址&amp;IPV4地址&amp;各语言</a><time datetime="2023-04-27T00:35:05.000Z" title="发表于 2023-04-27 08:35:05">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day112-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%88%86%E7%A6%BB-%E6%97%A0%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0-%E5%9B%BE%E7%89%87%E9%9A%90%E5%86%99-SOCK%E7%AE%A1%E9%81%93-%E5%8F%82%E6%95%B0%E5%8D%8F%E8%AE%AE%E5%8C%96/" title="Day112 免杀对抗-加载器分离&amp;无文件落地&amp;图片隐写&amp;SOCK管道&amp;参数协议化">Day112 免杀对抗-加载器分离&amp;无文件落地&amp;图片隐写&amp;SOCK管道&amp;参数协议化</a><time datetime="2023-04-27T00:34:45.000Z" title="发表于 2023-04-27 08:34:45">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/" title="Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包">Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包</a><time datetime="2023-04-27T00:34:28.000Z" title="发表于 2023-04-27 08:34:28">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day110-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-GO-C-%E5%8F%8DVT%E6%B2%99%E7%9B%92-%E9%80%86%E5%90%91%E8%B0%83%E8%AF%95-%E5%8F%82%E6%95%B0%E5%8A%A0%E8%BD%BD-%E8%B5%84%E6%BA%90%E5%88%86%E7%A6%BB-%E6%B7%B7%E6%B7%86%E5%8A%A0%E5%AF%86/" title="Day110 免杀对抗-GO&amp;C#&amp;反VT沙盒&amp;逆向调试&amp;参数加载&amp;资源分离&amp;混淆加密">Day110 免杀对抗-GO&amp;C#&amp;反VT沙盒&amp;逆向调试&amp;参数加载&amp;资源分离&amp;混淆加密</a><time datetime="2023-04-27T00:34:13.000Z" title="发表于 2023-04-27 08:34:13">2023-04-27</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By pwy</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

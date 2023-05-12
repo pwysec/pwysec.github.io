@@ -1,0 +1,223 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Day95 代码审计-SAST&amp;IAST项目&amp;PHP&amp;Java&amp;NET&amp;Python&amp;Js&amp;Go等测评 | ai潼</title><meta name="author" content="pwy"><meta name="copyright" content="pwy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="#知识点：1、代码审计-开源版&amp;商业版 2、代码审计-单语言&amp;多语言 3、代码审计-DAST&amp;SAST&amp;IAST #Java审计知识点：https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;7945   java代码审计常规思路和方法.pdf SQL注入，XSS跨站，RCE执行，反序列化，身份验证，SPEL，SSTI，三方组件安全等 #章节点：1、语言审计-PHP&amp;amp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Day95 代码审计-SAST&amp;IAST项目&amp;PHP&amp;Java&amp;NET&amp;Python&amp;Js&amp;Go等测评">
+<meta property="og:url" content="http://example.com/2023/04/11/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/index.html">
+<meta property="og:site_name" content="ai潼">
+<meta property="og:description" content="#知识点：1、代码审计-开源版&amp;商业版 2、代码审计-单语言&amp;多语言 3、代码审计-DAST&amp;SAST&amp;IAST #Java审计知识点：https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;7945   java代码审计常规思路和方法.pdf SQL注入，XSS跨站，RCE执行，反序列化，身份验证，SPEL，SSTI，三方组件安全等 #章节点：1、语言审计-PHP&amp;amp">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/image-20230414174057617.png">
+<meta property="article:published_time" content="2023-04-11T02:19:26.000Z">
+<meta property="article:modified_time" content="2023-04-14T09:41:05.962Z">
+<meta property="article:author" content="pwy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/image-20230414174057617.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/04/11/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Day95 代码审计-SAST&IAST项目&PHP&Java&NET&Python&Js&Go等测评',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-14 17:41:05'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="ai潼" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tt.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/../images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/image-20230414174057617.png')"><nav id="nav"><span id="blog-info"><a href="/" title="ai潼"><span class="site-name">ai潼</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Day95 代码审计-SAST&amp;IAST项目&amp;PHP&amp;Java&amp;NET&amp;Python&amp;Js&amp;Go等测评</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-04-11T02:19:26.000Z" title="发表于 2023-04-11 10:19:26">2023-04-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-14T09:41:05.962Z" title="更新于 2023-04-14 17:41:05">2023-04-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Day95 代码审计-SAST&amp;IAST项目&amp;PHP&amp;Java&amp;NET&amp;Python&amp;Js&amp;Go等测评"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="知识点："><a href="#知识点：" class="headerlink" title="#知识点："></a>#知识点：</h3><p>1、代码审计-开源版&amp;商业版</p>
+<p>2、代码审计-单语言&amp;多语言</p>
+<p>3、代码审计-DAST&amp;SAST&amp;IAST</p>
+<h3 id="Java审计知识点："><a href="#Java审计知识点：" class="headerlink" title="#Java审计知识点："></a>#Java审计知识点：</h3><p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/7945">https://xz.aliyun.com/t/7945</a>   java代码审计常规思路和方法.pdf</p>
+<p>SQL注入，XSS跨站，RCE执行，反序列化，身份验证，SPEL，SSTI，三方组件安全等</p>
+<h3 id="章节点："><a href="#章节点：" class="headerlink" title="#章节点："></a>#章节点：</h3><p>1、语言审计-PHP&amp;.Net&amp;Java&amp;Python</p>
+<p>2、漏洞审计-注入&amp;上传&amp;RCE&amp;未授权等</p>
+<p>3、框架审计-ThinkPHP&amp;Spring&amp;Flask等</p>
+<p>4、工具审计-RIPS&amp;VCG&amp;Fortify&amp;Bandit等</p>
+<p>5、技术审计-动静态调试&amp;DAST&amp;SAST&amp;IAST等</p>
+<p><img src="/../images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/Qu9rvdL1uVm46pnMkdIKKw.png" alt="img"></p>
+<p><img src="/../images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/1KVCYs7pMFhVOkRfle1BnA.png" alt="img"></p>
+<p><img src="/../images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/1KVCYs7pMFhVOkRfle1BnA.png" alt="img"></p>
+<blockquote>
+<h3 id="演示案例："><a href="#演示案例：" class="headerlink" title="演示案例："></a>演示案例：</h3><h4 id="➢-代码审计利器-SAST-单语言"><a href="#➢-代码审计利器-SAST-单语言" class="headerlink" title="➢ 代码审计利器-SAST-单语言"></a>➢ 代码审计利器-SAST-单语言</h4><h4 id="➢-代码审计利器-SAST-多语言"><a href="#➢-代码审计利器-SAST-多语言" class="headerlink" title="➢ 代码审计利器-SAST-多语言"></a>➢ 代码审计利器-SAST-多语言</h4></blockquote>
+<p>DAST&amp;SAST&amp;IAST</p>
+<p>DAST：动态应用程序安全测试（Dynamic Application Security Testing）技术在测试或运行阶段分析应用程序的动态运行状态。它模拟黑客行为对应用程序进行动态攻击，分析应用程序的反应，从而确定该Web应用是否易受攻击。</p>
+<p>SAST：静态应用程序安全测试（Static Application Security Testing）技术通常在编码阶段分析应用程序的源代码或二进制文件的语法、结构、过程、接口等来发现程序代码存在的安全漏洞。</p>
+<p>IAST：交互式应用程序安全测试（Interactive Application Security Testing）是2012年Gartner公司提出的一种新的应用程序安全测试方案，通过代理、VPN或者在服务端部署Agent程序，收集、监控Web应用程序运行时函数执行、数据传输，并与扫描器端进行实时交互，高效、准确的识别安全缺陷及漏洞，同时可准确确定漏洞所在的代码文件、行数、函数及参数。IAST相当于是DAST和SAST结合的一种互相关联运行时安全检测技术。</p>
+<p><img src="/../images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/image-20230414151639258.png" alt="image-20230414151639258"></p>
+<p>目前还有些商业版平台未介绍如下：</p>
+<p>静态：CheckMarx 奇安信代码卫士等</p>
+<p>IAST：悬镜灵脉IAST 默安雳鉴IAST等</p>
+<p><strong>PHP</strong> -Seay RIPS <strong>CheckMarx Fortify</strong>（这两款占用cpu较大，不建议本机使用） VCG Kunlun-M</p>
+<p><strong>NET</strong> -VCG Fortify CheckMarx</p>
+<p><strong>Java</strong>-Fortify Fortify CheckMarx</p>
+<p><strong>Python</strong>-Bandit Fortify CheckMarx</p>
+<p><strong>JS</strong>-Kunlun-M NodeJsScan Fortify CheckMarx</p>
+<p><strong>Go</strong>-Gosec CheckMarx</p>
+<h4 id="Bandit"><a href="#Bandit" class="headerlink" title="Bandit"></a>Bandit</h4><p><img src="/../images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/image-20230414143726848.png" alt="image-20230414143726848"></p>
+<p>参考：<a target="_blank" rel="noopener" href="https://bandit.readthedocs.io/">https://bandit.readthedocs.io/</a></p>
+<p>安装：pip install bandit</p>
+<h5 id="linux"><a href="#linux" class="headerlink" title="linux:"></a>linux:</h5><p>安装后会在当前Python目录下bin</p>
+<p>使用：bandit -r 需要审计的源码目录</p>
+<h5 id="windows"><a href="#windows" class="headerlink" title="windows:"></a>windows:</h5><p>安装后会在当前Python目录下script</p>
+<p>使用：bandit -r 需要审计的源码目录</p>
+<p>D:\Python3\Scripts&gt;bandit.exe -r F:\python_webapp\www\</p>
+<h4 id="Kunlun-M"><a href="#Kunlun-M" class="headerlink" title="Kunlun-M"></a>Kunlun-M</h4><p>1、安装依赖库：pip install -r requirements.txt</p>
+<p>2、配置文件启用：cp Kunlun_M&#x2F;settings.py.bak Kunlun_M&#x2F;settings.py</p>
+<p>3、初始化数据库：python kunlun.py init initialize</p>
+<p>4、加载规则数据库：python kunlun.py config load</p>
+<p>Web使用：D:\Python38\python.exe kunlun.py web -p 9999</p>
+<p>Cli使用：D:\Python38\python.exe kunlun.py scan -t D:&#x2F;phpstudy&#x2F;PHPTutorial&#x2F;WWW&#x2F;xhcms</p>
+<h4 id="Gosec"><a href="#Gosec" class="headerlink" title="Gosec"></a>Gosec</h4><p>curl -sfL <a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/securego/gosec/master/install.sh">https://raw.githubusercontent.com/securego/gosec/master/install.sh</a> | sh -s – -b $(go env GOPATH)&#x2F;bin v2.12.0</p>
+<p>gosec -fmt&#x3D;json -out&#x3D;results.json .&#x2F;…</p>
+<p><strong>VCG</strong> </p>
+<p><img src="/../images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/image-20230414142159413.png" alt="image-20230414142159413"></p>
+<p><strong>CheckMarx</strong> （<strong>会追踪参数调用过程</strong>）</p>
+<h5 id="这里只有这个打包的虚拟机里面有破解的"><a href="#这里只有这个打包的虚拟机里面有破解的" class="headerlink" title="这里只有这个打包的虚拟机里面有破解的"></a>这里只有这个打包的虚拟机里面有破解的</h5><p><img src="/../images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/image-20230414141509127.png" alt="image-20230414141509127"></p>
+<p><img src="/../images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/image-20230414142516597.png" alt="image-20230414142516597"></p>
+<p><strong>Fortify</strong></p>
+<p><img src="/../images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/image-20230414133629131.png" alt="image-20230414133629131"></p>
+<p><strong>1、</strong><a target="_blank" rel="noopener" href="https://github.com/securego/gosec">https://github.com/securego/gosec</a>   Go</p>
+<p><strong>2、</strong><a target="_blank" rel="noopener" href="https://github.com/FeeiCN/Cobra">https://github.com/FeeiCN/Cobra</a> 多语言</p>
+<p><strong>3、</strong><a target="_blank" rel="noopener" href="https://github.com/LoRexxar/Kunlun-M">https://github.com/LoRexxar/Kunlun-M</a> PHP&amp;Js</p>
+<h5 id="文档生成"><a href="#文档生成" class="headerlink" title="文档生成"></a>文档生成</h5><p><img src="/../images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/image-20230414132722567.png" alt="image-20230414132722567"></p>
+<p><img src="/../images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/image-20230414120035899.png" alt="image-20230414120035899"></p>
+<p><img src="/../images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/image-20230414132747346.png" alt="image-20230414132747346"></p>
+<p><img src="/../images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/image-20230414133137102.png" alt="image-20230414133137102"></p>
+<h6 id="使用web界面显示"><a href="#使用web界面显示" class="headerlink" title="使用web界面显示"></a>使用web界面显示</h6><p><img src="/../images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/image-20230414132454822.png" alt="image-20230414132454822"></p>
+<p><img src="/../images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/image-20230414132534965.png" alt="image-20230414132534965"></p>
+<p><strong>4、</strong><a target="_blank" rel="noopener" href="https://github.com/presidentbeef/brakeman">https://github.com/presidentbeef/brakeman</a> Ruby</p>
+<p><strong>5、</strong><a target="_blank" rel="noopener" href="https://github.com/ajinabraham/NodeJsScan">https://github.com/ajinabraham/NodeJsScan</a> JS框架</p>
+<p><strong>6、</strong><a target="_blank" rel="noopener" href="https://github.com/PyCQA/bandit/releases">https://github.com/PyCQA/bandit/releases</a> Python</p>
+<p><img src="/../images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/image-20230414114357179.png" alt="image-20230414114357179"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">pwy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/04/11/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/">http://example.com/2023/04/11/Day95-代码审计-SAST-IAST项目-PHP-Java-NET-Python-Js-Go等测评/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">ai潼</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/../images/Day95-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-PHP-Java-NET-Python-Js-Go%E7%AD%89%E6%B5%8B%E8%AF%84/image-20230414174057617.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/04/11/Day96-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-%E7%81%AB%E7%BA%BF%E6%B4%9E%E6%80%81-Agent%E9%83%A8%E7%BD%B2-%E6%8F%92%E4%BB%B6%E5%AE%89%E8%A3%85-%E4%BA%A7%E5%93%81%E6%B5%8B%E8%AF%84/" title="Day96 代码审计-SAST&amp;IAST项目&amp;火线洞态&amp;Agent部署&amp;插件安装&amp;产品测评"><img class="cover" src="/../images/Day96-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-SAST-IAST%E9%A1%B9%E7%9B%AE-%E7%81%AB%E7%BA%BF%E6%B4%9E%E6%80%81-Agent%E9%83%A8%E7%BD%B2-%E6%8F%92%E4%BB%B6%E5%AE%89%E8%A3%85-%E4%BA%A7%E5%93%81%E6%B5%8B%E8%AF%84/image-20230414174150798.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Day96 代码审计-SAST&amp;IAST项目&amp;火线洞态&amp;Agent部署&amp;插件安装&amp;产品测评</div></div></a></div><div class="next-post pull-right"><a href="/2023/04/11/Day94-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-SSTI-SSRF-XXE-XML-CNVD%E6%A8%A1%E7%89%88-CTF%E7%BB%84%E4%BB%B6/" title="Day94 代码审计-Java项目&amp;SSTI&amp;SSRF&amp;XXE&amp;XML&amp;CNVD模版&amp;CTF组件&amp;shiro反序列化"><img class="cover" src="/../images/Day94-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-SSTI-SSRF-XXE-XML-CNVD%E6%A8%A1%E7%89%88-CTF%E7%BB%84%E4%BB%B6/image-20230414174016390.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Day94 代码审计-Java项目&amp;SSTI&amp;SSRF&amp;XXE&amp;XML&amp;CNVD模版&amp;CTF组件&amp;shiro反序列化</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tt.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">pwy</div><div class="author-info__description">自律&上进</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">#知识点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Java%E5%AE%A1%E8%AE%A1%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">#Java审计知识点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%A0%E8%8A%82%E7%82%B9%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">#章节点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%94%E7%A4%BA%E6%A1%88%E4%BE%8B%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">演示案例：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9E%A2-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E5%88%A9%E5%99%A8-SAST-%E5%8D%95%E8%AF%AD%E8%A8%80"><span class="toc-number">4.1.</span> <span class="toc-text">➢ 代码审计利器-SAST-单语言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9E%A2-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E5%88%A9%E5%99%A8-SAST-%E5%A4%9A%E8%AF%AD%E8%A8%80"><span class="toc-number">4.2.</span> <span class="toc-text">➢ 代码审计利器-SAST-多语言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Bandit"><span class="toc-number">4.3.</span> <span class="toc-text">Bandit</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#linux"><span class="toc-number">4.3.1.</span> <span class="toc-text">linux:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#windows"><span class="toc-number">4.3.2.</span> <span class="toc-text">windows:</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Kunlun-M"><span class="toc-number">4.4.</span> <span class="toc-text">Kunlun-M</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Gosec"><span class="toc-number">4.5.</span> <span class="toc-text">Gosec</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%BF%99%E9%87%8C%E5%8F%AA%E6%9C%89%E8%BF%99%E4%B8%AA%E6%89%93%E5%8C%85%E7%9A%84%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%87%8C%E9%9D%A2%E6%9C%89%E7%A0%B4%E8%A7%A3%E7%9A%84"><span class="toc-number">4.5.1.</span> <span class="toc-text">这里只有这个打包的虚拟机里面有破解的</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90"><span class="toc-number">4.5.2.</span> <span class="toc-text">文档生成</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8web%E7%95%8C%E9%9D%A2%E6%98%BE%E7%A4%BA"><span class="toc-number">4.5.2.1.</span> <span class="toc-text">使用web界面显示</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/hello-world/" title="Hello World">Hello World</a><time datetime="2023-05-12T15:24:14.066Z" title="发表于 2023-05-12 23:24:14">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day113-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-%E5%86%85%E5%AD%98%E5%8A%A0%E8%BD%BD-API%E5%B0%81%E8%A3%85-UUID%E6%A0%87%E8%AF%86-MAC%E5%9C%B0%E5%9D%80-IPV4%E5%9C%B0%E5%9D%80-%E5%90%84%E8%AF%AD%E8%A8%80/" title="Day113 免杀对抗-内存加载&amp;API封装&amp;UUID标识&amp;MAC地址&amp;IPV4地址&amp;各语言">Day113 免杀对抗-内存加载&amp;API封装&amp;UUID标识&amp;MAC地址&amp;IPV4地址&amp;各语言</a><time datetime="2023-04-27T00:35:05.000Z" title="发表于 2023-04-27 08:35:05">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day112-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%88%86%E7%A6%BB-%E6%97%A0%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0-%E5%9B%BE%E7%89%87%E9%9A%90%E5%86%99-SOCK%E7%AE%A1%E9%81%93-%E5%8F%82%E6%95%B0%E5%8D%8F%E8%AE%AE%E5%8C%96/" title="Day112 免杀对抗-加载器分离&amp;无文件落地&amp;图片隐写&amp;SOCK管道&amp;参数协议化">Day112 免杀对抗-加载器分离&amp;无文件落地&amp;图片隐写&amp;SOCK管道&amp;参数协议化</a><time datetime="2023-04-27T00:34:45.000Z" title="发表于 2023-04-27 08:34:45">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/" title="Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包">Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包</a><time datetime="2023-04-27T00:34:28.000Z" title="发表于 2023-04-27 08:34:28">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day110-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-GO-C-%E5%8F%8DVT%E6%B2%99%E7%9B%92-%E9%80%86%E5%90%91%E8%B0%83%E8%AF%95-%E5%8F%82%E6%95%B0%E5%8A%A0%E8%BD%BD-%E8%B5%84%E6%BA%90%E5%88%86%E7%A6%BB-%E6%B7%B7%E6%B7%86%E5%8A%A0%E5%AF%86/" title="Day110 免杀对抗-GO&amp;C#&amp;反VT沙盒&amp;逆向调试&amp;参数加载&amp;资源分离&amp;混淆加密">Day110 免杀对抗-GO&amp;C#&amp;反VT沙盒&amp;逆向调试&amp;参数加载&amp;资源分离&amp;混淆加密</a><time datetime="2023-04-27T00:34:13.000Z" title="发表于 2023-04-27 08:34:13">2023-04-27</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By pwy</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

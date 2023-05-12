@@ -1,0 +1,240 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Day91 代码审计-Java项目&amp;访问控制&amp;Shiro框架&amp;Filter过滤器&amp;CNVD分析 | ai潼</title><meta name="author" content="pwy"><meta name="copyright" content="pwy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="#知识点：1、Java-配置-Filter过滤器 2、Java-配置-第三方框架组件 3、Java-代审-访问控制&amp;逻辑越权 #Java审计知识点：SQL注入，XSS跨站，RCE执行，反序列化，身份验证，SPEL，SSTI，三方组件安全等 #章节点：1、语言审计-PHP&amp;.Net&amp;Java&amp;Python 2、漏洞审计-注入&amp;上传&amp;RCE&amp;未授">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Day91 代码审计-Java项目&amp;访问控制&amp;Shiro框架&amp;Filter过滤器&amp;CNVD分析">
+<meta property="og:url" content="http://example.com/2023/04/11/Day91-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6-Shiro%E6%A1%86%E6%9E%B6-Filter%E8%BF%87%E6%BB%A4%E5%99%A8-CNVD%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="ai潼">
+<meta property="og:description" content="#知识点：1、Java-配置-Filter过滤器 2、Java-配置-第三方框架组件 3、Java-代审-访问控制&amp;逻辑越权 #Java审计知识点：SQL注入，XSS跨站，RCE执行，反序列化，身份验证，SPEL，SSTI，三方组件安全等 #章节点：1、语言审计-PHP&amp;.Net&amp;Java&amp;Python 2、漏洞审计-注入&amp;上传&amp;RCE&amp;未授">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/Day91-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6-Shiro%E6%A1%86%E6%9E%B6-Filter%E8%BF%87%E6%BB%A4%E5%99%A8-CNVD%E5%88%86%E6%9E%90/image-20230414173718392.png">
+<meta property="article:published_time" content="2023-04-11T02:18:08.000Z">
+<meta property="article:modified_time" content="2023-04-14T09:37:29.640Z">
+<meta property="article:author" content="pwy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Day91-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6-Shiro%E6%A1%86%E6%9E%B6-Filter%E8%BF%87%E6%BB%A4%E5%99%A8-CNVD%E5%88%86%E6%9E%90/image-20230414173718392.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/04/11/Day91-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6-Shiro%E6%A1%86%E6%9E%B6-Filter%E8%BF%87%E6%BB%A4%E5%99%A8-CNVD%E5%88%86%E6%9E%90/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Day91 代码审计-Java项目&访问控制&Shiro框架&Filter过滤器&CNVD分析',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-14 17:37:29'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="ai潼" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tt.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/../images/Day91-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6-Shiro%E6%A1%86%E6%9E%B6-Filter%E8%BF%87%E6%BB%A4%E5%99%A8-CNVD%E5%88%86%E6%9E%90/image-20230414173718392.png')"><nav id="nav"><span id="blog-info"><a href="/" title="ai潼"><span class="site-name">ai潼</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Day91 代码审计-Java项目&amp;访问控制&amp;Shiro框架&amp;Filter过滤器&amp;CNVD分析</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-04-11T02:18:08.000Z" title="发表于 2023-04-11 10:18:08">2023-04-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-14T09:37:29.640Z" title="更新于 2023-04-14 17:37:29">2023-04-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Day91 代码审计-Java项目&amp;访问控制&amp;Shiro框架&amp;Filter过滤器&amp;CNVD分析"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="知识点："><a href="#知识点：" class="headerlink" title="#知识点："></a>#知识点：</h3><p>1、Java-配置-Filter过滤器</p>
+<p>2、Java-配置-第三方框架组件</p>
+<p>3、Java-代审-访问控制&amp;逻辑越权</p>
+<h3 id="Java审计知识点："><a href="#Java审计知识点：" class="headerlink" title="#Java审计知识点："></a>#Java审计知识点：</h3><p>SQL注入，XSS跨站，RCE执行，反序列化，身份验证，SPEL，SSTI，三方组件安全等</p>
+<h3 id="章节点："><a href="#章节点：" class="headerlink" title="#章节点："></a>#章节点：</h3><p>1、语言审计-PHP&amp;.Net&amp;Java&amp;Python</p>
+<p>2、漏洞审计-注入&amp;上传&amp;RCE&amp;未授权等</p>
+<p>3、框架审计-ThinkPHP&amp;Spring&amp;Flask等</p>
+<p>4、工具审计-RIPS&amp;VCG&amp;Fortify&amp;Bandit等</p>
+<p>5、技术审计-动静态调试&amp;DAST&amp;SAST&amp;IAST等</p>
+<h4 id="Javaweb身份验证访问控制："><a href="#Javaweb身份验证访问控制：" class="headerlink" title="Javaweb身份验证访问控制："></a>Javaweb身份验证访问控制：</h4><p>开发做访问控制身份验证有几种技术方案实现：</p>
+<p>1、传统代码-登录性判断文件代码看</p>
+<p>2、Shiro框架引用-看配置看引用看外部库</p>
+<p>3、Filter过滤器-看配置看过滤器目录分析代码</p>
+<p>4、JWT技术-看看引用看外部库搜关键函数代码</p>
+<p><strong>审计此类漏洞：</strong></p>
+<p><strong>搞清楚代码的验证方式</strong></p>
+<blockquote>
+<h3 id="演示案例："><a href="#演示案例：" class="headerlink" title="演示案例："></a>演示案例：</h3><h4 id="➢-逻辑越权-WS租车系统-传统验证机制"><a href="#➢-逻辑越权-WS租车系统-传统验证机制" class="headerlink" title="➢ 逻辑越权-WS租车系统-传统验证机制"></a>➢ 逻辑越权-WS租车系统-传统验证机制</h4><h4 id="➢-CNVD-Tumo-未授权访问-Shiro框架引用"><a href="#➢-CNVD-Tumo-未授权访问-Shiro框架引用" class="headerlink" title="➢ CNVD-Tumo-未授权访问-Shiro框架引用"></a>➢ CNVD-Tumo-未授权访问-Shiro框架引用</h4><h4 id="➢-CNVD-华夏ERP-未授权访问-Filter过滤器"><a href="#➢-CNVD-华夏ERP-未授权访问-Filter过滤器" class="headerlink" title="➢ CNVD-华夏ERP-未授权访问-Filter过滤器"></a>➢ CNVD-华夏ERP-未授权访问-Filter过滤器</h4></blockquote>
+<h4 id="逻辑越权-WS租车系统-传统验证机制"><a href="#逻辑越权-WS租车系统-传统验证机制" class="headerlink" title="#逻辑越权-WS租车系统-传统验证机制"></a>#逻辑越权-WS租车系统-传统验证机制</h4><p>-传统验证</p>
+<p>1、垂直用户进行权限测试</p>
+<p>2、抓包配合反编译查看代码</p>
+<p>weishang-1.4.jar</p>
+<p>car-weishang-1.0.jar</p>
+<h4 id="CNVD-Tumo-未授权访问-Shiro框架引用"><a href="#CNVD-Tumo-未授权访问-Shiro框架引用" class="headerlink" title="#CNVD-Tumo-未授权访问-Shiro框架引用"></a>#CNVD-Tumo-未授权访问-Shiro框架引用</h4><p>-shiro开源框架引用</p>
+<p>项目地址：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/TyCoding/tumo">https://github.com/TyCoding/tumo</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnvd.org.cn/flaw/show/2455201">https://www.cnvd.org.cn/flaw/show/2455201</a></p>
+<p>shiro是apache的一个开源框架,是一个权限管理的框架,实现 用户认证、用户授权。</p>
+<h5 id="1、引用shiro做身份验证"><a href="#1、引用shiro做身份验证" class="headerlink" title="1、引用shiro做身份验证"></a>1、引用shiro做身份验证</h5><p><img src="/../images/Day91-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6-Shiro%E6%A1%86%E6%9E%B6-Filter%E8%BF%87%E6%BB%A4%E5%99%A8-CNVD%E5%88%86%E6%9E%90/image-20230412153439280.png" alt="image-20230412153439280"></p>
+<p>pom.xml Maven配置文件</p>
+<p><code>&lt;shiro-spring-version&gt;1.5.2&lt;/shiro-spring-version&gt;</code></p>
+<p><code>&lt;shiro-ehcache.version&gt;1.5.3&lt;/shiro-ehcache.version&gt;</code></p>
+<h5 id="2、查看shiro配置信息"><a href="#2、查看shiro配置信息" class="headerlink" title="2、查看shiro配置信息"></a>2、查看shiro配置信息</h5><p>anon一般代表不需要鉴权的配置，**则表示该接口下的所有接口。</p>
+<p>tumo.shiro.anon_url&#x3D;\</p>
+<p>  &#x2F;login,&#x2F;logout,&#x2F;register,\</p>
+<p>  &#x2F;,&#x2F;about,&#x2F;p&#x2F;<strong>,&#x2F;links,&#x2F;comment&#x2F;</strong>,&#x2F;link&#x2F;list,&#x2F;article&#x2F;list,\</p>
+<p>  &#x2F;css&#x2F;<strong>,&#x2F;js&#x2F;</strong>,&#x2F;img&#x2F;**</p>
+<h5 id="3、寻找利用点"><a href="#3、寻找利用点" class="headerlink" title="3、寻找利用点"></a>3、寻找利用点</h5><p>CommentController.java</p>
+<p>@RequestMapping(“&#x2F;comment”)</p>
+<p>@DeleteMapping(“&#x2F;{id}”)</p>
+<h5 id="4、测试"><a href="#4、测试" class="headerlink" title="4、测试"></a>4、测试</h5><p><strong>未授权删除</strong></p>
+<p><code>DELETE /comment/6 HTTP/1.1</code></p>
+<p><code>Host: xx.xx.xx.xx</code></p>
+<p><code>User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:48.0) Gecko/20100101 Firefox/48.0</code></p>
+<p><code>Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</code></p>
+<p><code>Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3</code></p>
+<p><code>Accept-Encoding: gzip, deflate</code></p>
+<p><code>DNT: 1</code></p>
+<p><code>Cookie: JSESSIONID=65363705-4943-4f66-8d3e-06e847ae8d58</code></p>
+<p><code>Connection: close</code></p>
+<p><code>Upgrade-Insecure-Requests: 1</code></p>
+<p><img src="/../images/Day91-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6-Shiro%E6%A1%86%E6%9E%B6-Filter%E8%BF%87%E6%BB%A4%E5%99%A8-CNVD%E5%88%86%E6%9E%90/image-20230412163312857.png" alt="image-20230412163312857"></p>
+<h4 id="CNVD-华夏ERP-未授权访问-Filter过滤器"><a href="#CNVD-华夏ERP-未授权访问-Filter过滤器" class="headerlink" title="#CNVD-华夏ERP-未授权访问-Filter过滤器"></a>#CNVD-华夏ERP-未授权访问-Filter过滤器</h4><p><a target="_blank" rel="noopener" href="https://gitee.com/jishenghua/JSH_ERP">https://gitee.com/jishenghua/JSH_ERP</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnvd.org.cn/flaw/show/2457718">https://www.cnvd.org.cn/flaw/show/2457718</a></p>
+<p>-Filter过滤器</p>
+<h5 id="1、com-jsh-erp-filter-LogCostFilter"><a href="#1、com-jsh-erp-filter-LogCostFilter" class="headerlink" title="1、com.jsh.erp.filter.LogCostFilter"></a>1、com.jsh.erp.filter.LogCostFilter</h5><p><img src="/../images/Day91-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6-Shiro%E6%A1%86%E6%9E%B6-Filter%E8%BF%87%E6%BB%A4%E5%99%A8-CNVD%E5%88%86%E6%9E%90/image-20230412164151469.png" alt="image-20230412164151469"></p>
+<p>使用了4个if判断，</p>
+<p>第1个if：如果有seesion则不跳登录页</p>
+<p>第2个if：如果包含login或register页面则不跳登录页</p>
+<p>第3个if：调用verify传入ignoredList与用户请求URL</p>
+<p>第4个if：如果存在allowUrls则不跳登录</p>
+<p>查找ignoredList来源</p>
+<p><img src="/../images/Day91-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6-Shiro%E6%A1%86%E6%9E%B6-Filter%E8%BF%87%E6%BB%A4%E5%99%A8-CNVD%E5%88%86%E6%9E%90/image-20230412164228283.png" alt="image-20230412164228283"></p>
+<h5 id="2、allowUrls存在ignoredList"><a href="#2、allowUrls存在ignoredList" class="headerlink" title="2、allowUrls存在ignoredList"></a>2、allowUrls存在ignoredList</h5><h6 id="如果访问css、js这种文件就不需要登录"><a href="#如果访问css、js这种文件就不需要登录" class="headerlink" title="如果访问css、js这种文件就不需要登录"></a>如果访问css、js这种文件就不需要登录</h6><p><img src="/../images/Day91-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6-Shiro%E6%A1%86%E6%9E%B6-Filter%E8%BF%87%E6%BB%A4%E5%99%A8-CNVD%E5%88%86%E6%9E%90/image-20230412165619183.png" alt="image-20230412165619183"></p>
+<p><a target="_blank" rel="noopener" href="http://test.com/hello">http://test.com/a.css/../hello</a></p>
+<h6 id="直接访问会重定向到登录页面"><a href="#直接访问会重定向到登录页面" class="headerlink" title="直接访问会重定向到登录页面"></a>直接访问会重定向到登录页面</h6><p><img src="/../images/Day91-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6-Shiro%E6%A1%86%E6%9E%B6-Filter%E8%BF%87%E6%BB%A4%E5%99%A8-CNVD%E5%88%86%E6%9E%90/image-20230412164955690.png" alt="image-20230412164955690"></p>
+<h5 id="3、测试"><a href="#3、测试" class="headerlink" title="3、测试"></a>3、测试</h5><p><code>GET /a.css/../pages/materials/retail_back_list.html HTTP/1.1</code></p>
+<p><code>Host: xx.xx.xx.xx</code></p>
+<p><code>Upgrade-Insecure-Requests: 1</code></p>
+<p><code>User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.0.0 Safari/537.36</code></p>
+<p><code>Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9</code></p>
+<p><code>Referer: http://xx.xx.xx.xx/index.html</code></p>
+<p><code>Accept-Encoding: gzip, deflate</code></p>
+<p><code>Accept-Language: zh-CN,zh;q=0.9</code></p>
+<p><code>Connection: close</code></p>
+<p>成功跳转</p>
+<p><img src="/../images/Day91-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6-Shiro%E6%A1%86%E6%9E%B6-Filter%E8%BF%87%E6%BB%A4%E5%99%A8-CNVD%E5%88%86%E6%9E%90/image-20230412165210652.png" alt="image-20230412165210652"></p>
+<h4 id="JWT引用验证"><a href="#JWT引用验证" class="headerlink" title="-JWT引用验证"></a>-JWT引用验证</h4><p>看看引用看外部库搜关键函数代码</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/vege/p/14468030.html">https://www.cnblogs.com/vege/p/14468030.html</a></p>
+<p>见第21天：WEB攻防-JavaWeb项目&amp;JWT身份攻击&amp;组件安全&amp;访问控制</p>
+<p>键值逻辑：使用键名键值进行对比验证错误</p>
+<p>JWT攻击：1、签名没验证空加密 2、爆破密匙 3、KID利用</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">pwy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/04/11/Day91-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6-Shiro%E6%A1%86%E6%9E%B6-Filter%E8%BF%87%E6%BB%A4%E5%99%A8-CNVD%E5%88%86%E6%9E%90/">http://example.com/2023/04/11/Day91-代码审计-Java项目-访问控制-Shiro框架-Filter过滤器-CNVD分析/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">ai潼</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/../images/Day91-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6-Shiro%E6%A1%86%E6%9E%B6-Filter%E8%BF%87%E6%BB%A4%E5%99%A8-CNVD%E5%88%86%E6%9E%90/image-20230414173718392.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/04/11/Day92-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-%E6%A1%86%E6%9E%B6RCE-%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5-SPEL-Log4j-Fastjson/" title="Day92 代码审计-Java项目&amp;框架RCE&amp;表达式注入&amp;SPEL&amp;Log4j&amp;Fastjson"><img class="cover" src="/../images/Day92-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-%E6%A1%86%E6%9E%B6RCE-%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5-SPEL-Log4j-Fastjson/image-20230414173831423.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Day92 代码审计-Java项目&amp;框架RCE&amp;表达式注入&amp;SPEL&amp;Log4j&amp;Fastjson</div></div></a></div><div class="next-post pull-right"><a href="/2023/04/11/Day90-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-Filter%E8%BF%87%E6%BB%A4%E5%99%A8-CNVD%E5%88%86%E6%9E%90-XSS%E8%B7%A8%E7%AB%99-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8/" title="Day90 代码审计-Java项目&amp;Filter过滤器&amp;CNVD分析&amp;XSS跨站&amp;框架安全"><img class="cover" src="/../images/Day90-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Java%E9%A1%B9%E7%9B%AE-Filter%E8%BF%87%E6%BB%A4%E5%99%A8-CNVD%E5%88%86%E6%9E%90-XSS%E8%B7%A8%E7%AB%99-%E6%A1%86%E6%9E%B6%E5%AE%89%E5%85%A8/image-20230414173614941.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Day90 代码审计-Java项目&amp;Filter过滤器&amp;CNVD分析&amp;XSS跨站&amp;框架安全</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tt.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">pwy</div><div class="author-info__description">自律&上进</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">#知识点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Java%E5%AE%A1%E8%AE%A1%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">#Java审计知识点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%A0%E8%8A%82%E7%82%B9%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">#章节点：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Javaweb%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%EF%BC%9A"><span class="toc-number">3.1.</span> <span class="toc-text">Javaweb身份验证访问控制：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%94%E7%A4%BA%E6%A1%88%E4%BE%8B%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">演示案例：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9E%A2-%E9%80%BB%E8%BE%91%E8%B6%8A%E6%9D%83-WS%E7%A7%9F%E8%BD%A6%E7%B3%BB%E7%BB%9F-%E4%BC%A0%E7%BB%9F%E9%AA%8C%E8%AF%81%E6%9C%BA%E5%88%B6"><span class="toc-number">4.1.</span> <span class="toc-text">➢ 逻辑越权-WS租车系统-传统验证机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9E%A2-CNVD-Tumo-%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE-Shiro%E6%A1%86%E6%9E%B6%E5%BC%95%E7%94%A8"><span class="toc-number">4.2.</span> <span class="toc-text">➢ CNVD-Tumo-未授权访问-Shiro框架引用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9E%A2-CNVD-%E5%8D%8E%E5%A4%8FERP-%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE-Filter%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="toc-number">4.3.</span> <span class="toc-text">➢ CNVD-华夏ERP-未授权访问-Filter过滤器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E8%B6%8A%E6%9D%83-WS%E7%A7%9F%E8%BD%A6%E7%B3%BB%E7%BB%9F-%E4%BC%A0%E7%BB%9F%E9%AA%8C%E8%AF%81%E6%9C%BA%E5%88%B6"><span class="toc-number">4.4.</span> <span class="toc-text">#逻辑越权-WS租车系统-传统验证机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CNVD-Tumo-%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE-Shiro%E6%A1%86%E6%9E%B6%E5%BC%95%E7%94%A8"><span class="toc-number">4.5.</span> <span class="toc-text">#CNVD-Tumo-未授权访问-Shiro框架引用</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81%E5%BC%95%E7%94%A8shiro%E5%81%9A%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81"><span class="toc-number">4.5.1.</span> <span class="toc-text">1、引用shiro做身份验证</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2%E3%80%81%E6%9F%A5%E7%9C%8Bshiro%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF"><span class="toc-number">4.5.2.</span> <span class="toc-text">2、查看shiro配置信息</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3%E3%80%81%E5%AF%BB%E6%89%BE%E5%88%A9%E7%94%A8%E7%82%B9"><span class="toc-number">4.5.3.</span> <span class="toc-text">3、寻找利用点</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4%E3%80%81%E6%B5%8B%E8%AF%95"><span class="toc-number">4.5.4.</span> <span class="toc-text">4、测试</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CNVD-%E5%8D%8E%E5%A4%8FERP-%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE-Filter%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="toc-number">4.6.</span> <span class="toc-text">#CNVD-华夏ERP-未授权访问-Filter过滤器</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81com-jsh-erp-filter-LogCostFilter"><span class="toc-number">4.6.1.</span> <span class="toc-text">1、com.jsh.erp.filter.LogCostFilter</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2%E3%80%81allowUrls%E5%AD%98%E5%9C%A8ignoredList"><span class="toc-number">4.6.2.</span> <span class="toc-text">2、allowUrls存在ignoredList</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E8%AE%BF%E9%97%AEcss%E3%80%81js%E8%BF%99%E7%A7%8D%E6%96%87%E4%BB%B6%E5%B0%B1%E4%B8%8D%E9%9C%80%E8%A6%81%E7%99%BB%E5%BD%95"><span class="toc-number">4.6.2.1.</span> <span class="toc-text">如果访问css、js这种文件就不需要登录</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E7%9B%B4%E6%8E%A5%E8%AE%BF%E9%97%AE%E4%BC%9A%E9%87%8D%E5%AE%9A%E5%90%91%E5%88%B0%E7%99%BB%E5%BD%95%E9%A1%B5%E9%9D%A2"><span class="toc-number">4.6.2.2.</span> <span class="toc-text">直接访问会重定向到登录页面</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3%E3%80%81%E6%B5%8B%E8%AF%95"><span class="toc-number">4.6.3.</span> <span class="toc-text">3、测试</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#JWT%E5%BC%95%E7%94%A8%E9%AA%8C%E8%AF%81"><span class="toc-number">4.7.</span> <span class="toc-text">-JWT引用验证</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/hello-world/" title="Hello World">Hello World</a><time datetime="2023-05-12T15:24:14.066Z" title="发表于 2023-05-12 23:24:14">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day113-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-%E5%86%85%E5%AD%98%E5%8A%A0%E8%BD%BD-API%E5%B0%81%E8%A3%85-UUID%E6%A0%87%E8%AF%86-MAC%E5%9C%B0%E5%9D%80-IPV4%E5%9C%B0%E5%9D%80-%E5%90%84%E8%AF%AD%E8%A8%80/" title="Day113 免杀对抗-内存加载&amp;API封装&amp;UUID标识&amp;MAC地址&amp;IPV4地址&amp;各语言">Day113 免杀对抗-内存加载&amp;API封装&amp;UUID标识&amp;MAC地址&amp;IPV4地址&amp;各语言</a><time datetime="2023-04-27T00:35:05.000Z" title="发表于 2023-04-27 08:35:05">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day112-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%88%86%E7%A6%BB-%E6%97%A0%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0-%E5%9B%BE%E7%89%87%E9%9A%90%E5%86%99-SOCK%E7%AE%A1%E9%81%93-%E5%8F%82%E6%95%B0%E5%8D%8F%E8%AE%AE%E5%8C%96/" title="Day112 免杀对抗-加载器分离&amp;无文件落地&amp;图片隐写&amp;SOCK管道&amp;参数协议化">Day112 免杀对抗-加载器分离&amp;无文件落地&amp;图片隐写&amp;SOCK管道&amp;参数协议化</a><time datetime="2023-04-27T00:34:45.000Z" title="发表于 2023-04-27 08:34:45">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/" title="Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包">Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包</a><time datetime="2023-04-27T00:34:28.000Z" title="发表于 2023-04-27 08:34:28">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day110-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-GO-C-%E5%8F%8DVT%E6%B2%99%E7%9B%92-%E9%80%86%E5%90%91%E8%B0%83%E8%AF%95-%E5%8F%82%E6%95%B0%E5%8A%A0%E8%BD%BD-%E8%B5%84%E6%BA%90%E5%88%86%E7%A6%BB-%E6%B7%B7%E6%B7%86%E5%8A%A0%E5%AF%86/" title="Day110 免杀对抗-GO&amp;C#&amp;反VT沙盒&amp;逆向调试&amp;参数加载&amp;资源分离&amp;混淆加密">Day110 免杀对抗-GO&amp;C#&amp;反VT沙盒&amp;逆向调试&amp;参数加载&amp;资源分离&amp;混淆加密</a><time datetime="2023-04-27T00:34:13.000Z" title="发表于 2023-04-27 08:34:13">2023-04-27</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By pwy</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

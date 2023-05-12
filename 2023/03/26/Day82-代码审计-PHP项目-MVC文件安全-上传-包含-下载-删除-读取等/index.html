@@ -1,0 +1,288 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Day82 代码审计-PHP项目&amp;MVC文件安全&amp;上传&amp;包含&amp;下载&amp;删除&amp;读取等 | ai潼</title><meta name="author" content="pwy"><meta name="copyright" content="pwy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="#知识点：1、审计漏洞-文件上传&amp;删除&amp;写入&amp;读取等 1、审计思路-正则搜索&amp;功能追踪&amp;辅助工具 3、审计类型-常规架构&amp;MVC架构&amp;三方框架 #章节点：1、语言审计-PHP&amp;.Net&amp;Java&amp;Python 2、漏洞审计-注入&amp;上传&amp;RCE&amp;未授权等 3、框架审计-ThinkPHP&amp;S">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Day82 代码审计-PHP项目&amp;MVC文件安全&amp;上传&amp;包含&amp;下载&amp;删除&amp;读取等">
+<meta property="og:url" content="http://example.com/2023/03/26/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/index.html">
+<meta property="og:site_name" content="ai潼">
+<meta property="og:description" content="#知识点：1、审计漏洞-文件上传&amp;删除&amp;写入&amp;读取等 1、审计思路-正则搜索&amp;功能追踪&amp;辅助工具 3、审计类型-常规架构&amp;MVC架构&amp;三方框架 #章节点：1、语言审计-PHP&amp;.Net&amp;Java&amp;Python 2、漏洞审计-注入&amp;上传&amp;RCE&amp;未授权等 3、框架审计-ThinkPHP&amp;S">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328102934488.png">
+<meta property="article:published_time" content="2023-03-26T04:53:28.000Z">
+<meta property="article:modified_time" content="2023-03-29T05:29:01.438Z">
+<meta property="article:author" content="pwy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328102934488.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/03/26/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Day82 代码审计-PHP项目&MVC文件安全&上传&包含&下载&删除&读取等',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-03-29 13:29:01'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="ai潼" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tt.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328102934488.png')"><nav id="nav"><span id="blog-info"><a href="/" title="ai潼"><span class="site-name">ai潼</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Day82 代码审计-PHP项目&amp;MVC文件安全&amp;上传&amp;包含&amp;下载&amp;删除&amp;读取等</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-03-26T04:53:28.000Z" title="发表于 2023-03-26 12:53:28">2023-03-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-03-29T05:29:01.438Z" title="更新于 2023-03-29 13:29:01">2023-03-29</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Day82 代码审计-PHP项目&amp;MVC文件安全&amp;上传&amp;包含&amp;下载&amp;删除&amp;读取等"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h4 id="知识点："><a href="#知识点：" class="headerlink" title="#知识点："></a>#知识点：</h4><p>1、审计漏洞-文件上传&amp;删除&amp;写入&amp;读取等</p>
+<p>1、审计思路-正则搜索&amp;功能追踪&amp;辅助工具</p>
+<p>3、审计类型-常规架构&amp;MVC架构&amp;三方框架</p>
+<h4 id="章节点："><a href="#章节点：" class="headerlink" title="#章节点："></a>#章节点：</h4><p>1、语言审计-PHP&amp;.Net&amp;Java&amp;Python</p>
+<p>2、漏洞审计-注入&amp;上传&amp;RCE&amp;未授权等</p>
+<p>3、框架审计-ThinkPHP&amp;Spring&amp;Flask等</p>
+<p>4、工具审计-RIPS&amp;VCG&amp;Fortify&amp;Bandit等</p>
+<p>5、技术审计-动静态调试&amp;DAST&amp;SAST&amp;IAST等</p>
+<h4 id="简要点："><a href="#简要点：" class="headerlink" title="#简要点："></a>#简要点：</h4><p>1、代码审计必备知识点：</p>
+<p>环境搭建使用，工具插件安装使用，掌握各种漏洞原理及利用,代码开发类知识点。</p>
+<p>2、代码审计开始前准备：</p>
+<p>审计目标的程序名，版本，当前环境(系统,中间件,脚本语言等信息),各种插件等。</p>
+<p>3、代码审计挖掘漏洞根本：</p>
+<p>可控变量及特定函数，不存在过滤或过滤不严谨存在绕过导致的安全漏洞。</p>
+<p>4、代码审计教学计划：</p>
+<p>审计项目漏洞原理-&gt;审计思路-&gt;完整源码-&gt;应用框架-&gt;验证并利用漏洞。</p>
+<p>5、代码审计教学内容：</p>
+<p>PHP,Java,.NET,Python网站应用，引入框架类开发源码，相关审计工具及插件使用。</p>
+<h3 id="补充点："><a href="#补充点：" class="headerlink" title="#补充点："></a>#补充点：</h3><h5 id="MVC模型：见上图"><a href="#MVC模型：见上图" class="headerlink" title="-MVC模型：见上图"></a>-MVC模型：见上图</h5><p>当访问动态网页时，以MVC框架为例，浏览器提交查询到控制器（①），如是动态请求，控制器将对应sql查询送到对应模型（②），由模型和数据库交互得到查询结果返回给控制器（③），最后返回给浏览器（④）。</p>
+<h5 id="动态调试配置：phpStudy-PhpStorm-XDebug"><a href="#动态调试配置：phpStudy-PhpStorm-XDebug" class="headerlink" title="-动态调试配置：phpStudy + PhpStorm + XDebug"></a>-动态调试配置：phpStudy + PhpStorm + XDebug</h5><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/nzjdsds/article/details/100114242">https://blog.csdn.net/nzjdsds/article/details/100114242</a></p>
+<p>1、先确定PHP版本有Xdebug</p>
+<p>2、php.ini配置写入并开启Xdebug</p>
+<p>3、PhpStorm设置端口及IDEY并测试</p>
+<p>4、PhpStorm开启监听并运行断点访问</p>
+<h5 id="动态调试分析-phpstudy-amp-phpstorm-amp-xdebug"><a href="#动态调试分析-phpstudy-amp-phpstorm-amp-xdebug" class="headerlink" title="动态调试分析-phpstudy&amp;phpstorm&amp;xdebug"></a>动态调试分析-phpstudy&amp;phpstorm&amp;xdebug</h5><h6 id="PHP5配置："><a href="#PHP5配置：" class="headerlink" title="PHP5配置："></a>PHP5配置：</h6><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_40418199/article/details/79088365">https://blog.csdn.net/weixin_40418199/article/details/79088365</a></p>
+<h6 id="PHP7配置："><a href="#PHP7配置：" class="headerlink" title="PHP7配置："></a>PHP7配置：</h6><p><a target="_blank" rel="noopener" href="https://www.jb51.net/article/195840.htm">https://www.jb51.net/article/195840.htm</a></p>
+<h5 id="文件代码比对工具：Beyond-Compare-4"><a href="#文件代码比对工具：Beyond-Compare-4" class="headerlink" title="-文件代码比对工具：Beyond Compare 4"></a>-文件代码比对工具：Beyond Compare 4</h5><blockquote>
+<h3 id="演示案例："><a href="#演示案例：" class="headerlink" title="演示案例："></a>演示案例：</h3><p>​                ➢ 文件安全-文件包含-动态调试-xhcms</p>
+<p>​                ➢ 文件安全-文件删除-关键字搜索-zzzcms</p>
+<p>​                ➢ 文件安全-文件下载-功能点定位-earmusic</p>
+<p>​                ➢ CNVD&amp;1DAY-删除&amp;读取&amp;写入-梦想CMS</p>
+</blockquote>
+<h4 id="文件安全-文件包含-动态调试-xhcms"><a href="#文件安全-文件包含-动态调试-xhcms" class="headerlink" title="#文件安全-文件包含-动态调试-xhcms"></a>#文件安全-文件包含-动态调试-xhcms</h4><h6 id="1、动态调试-amp-关键字搜索-代码执行流程-amp-漏洞函数关键字"><a href="#1、动态调试-amp-关键字搜索-代码执行流程-amp-漏洞函数关键字" class="headerlink" title="1、动态调试&amp;关键字搜索-代码执行流程&amp;漏洞函数关键字"></a>1、动态调试&amp;关键字搜索-代码执行流程&amp;漏洞函数关键字</h6><h6 id="2、调试首页对应代码，修改数据，分析执行流程，测试漏洞"><a href="#2、调试首页对应代码，修改数据，分析执行流程，测试漏洞" class="headerlink" title="2、调试首页对应代码，修改数据，分析执行流程，测试漏洞"></a>2、调试首页对应代码，修改数据，分析执行流程，测试漏洞</h6><p>直接在首页动态断点调试</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328144328179.png" alt="image-20230328144328179"></p>
+<h4 id="文件安全-文件删除-关键字搜索-zzzcms"><a href="#文件安全-文件删除-关键字搜索-zzzcms" class="headerlink" title="#文件安全-文件删除-关键字搜索-zzzcms"></a>#文件安全-文件删除-关键字搜索-zzzcms</h4><p>代码分析：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44978149/article/details/118282795">(22条消息) 【PHP代码审计】ZZZCMS任意文件删除_HanQi丶的博客-CSDN博客</a></p>
+<h6 id="1、关键字挖掘-文件删除搜索关键字unlink-对应函数del-file，查看调用"><a href="#1、关键字挖掘-文件删除搜索关键字unlink-对应函数del-file，查看调用" class="headerlink" title="1、关键字挖掘-文件删除搜索关键字unlink,对应函数del_file，查看调用"></a>1、关键字挖掘-文件删除搜索关键字unlink,对应函数del_file，查看调用</h6><h6 id="2、后台delfile函数调用，如何处理delfile函数，受参数控制，进行测试"><a href="#2、后台delfile函数调用，如何处理delfile函数，受参数控制，进行测试" class="headerlink" title="2、后台delfile函数调用，如何处理delfile函数，受参数控制，进行测试"></a>2、后台delfile函数调用，如何处理delfile函数，受参数控制，进行测试</h6><h6 id="3、构造Payload-确定过滤-重新构造Payload-配合重装机制实现重装漏洞"><a href="#3、构造Payload-确定过滤-重新构造Payload-配合重装机制实现重装漏洞" class="headerlink" title="3、构造Payload-确定过滤-重新构造Payload-配合重装机制实现重装漏洞"></a>3、构造Payload-确定过滤-重新构造Payload-配合重装机制实现重装漏洞</h6><p>搜索关键字unlink找到这个文件</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328135701880.png" alt="image-20230328135701880"></p>
+<p>这里的file因为不是这个函数控制的，所以看谁调用了这个del_file方法，查找使用</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328135837980.png" alt="image-20230328135837980"></p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328135951427.png" alt="image-20230328135951427"></p>
+<p>这里直接调用delfile不能访问这个地方进行删除，因为没有调用这个delfile方法，这个zzzcms是常规源码，<strong>常规源码访问方法所在路径不一定成功，一定要访问调用这个方法的文件才可以</strong></p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328140301846.png" alt="image-20230328140301846"></p>
+<p>常规源码如下例子：</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328140957258.png" alt="image-20230328140957258"></p>
+<p>调用后就可以执行功能了</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328141331382.png" alt="image-20230328141331382"></p>
+<blockquote>
+<p><strong>无论是mvc源码还是常规源码，一定要找到（1、传参的地方  如：post get 某个变量2、调用函数的地方），所以mvc的只要找到传参的地方就行，而常规的源码，既要找到传参方法的地方还要找到调用这个方法的地方结合起来分析</strong></p>
+</blockquote>
+<p>接着上面的，点查找使用delfile的地方</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328142230907.png" alt="image-20230328142230907"></p>
+<p>而delfile方法里面说明path值里面有这四个关键字里面的才会让你删除</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328142744593.png" alt="image-20230328142744593"></p>
+<p>构造payload删除安装文件成功</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328142810358.png" alt="image-20230328142810358"></p>
+<h4 id="文件安全-文件下载-功能点定位-earmusic"><a href="#文件安全-文件下载-功能点定位-earmusic" class="headerlink" title="#文件安全-文件下载-功能点定位-earmusic"></a>#文件安全-文件下载-功能点定位-earmusic</h4><h6 id="1、功能点挖掘-抓包分析下载地址找到对应代码块，文件下载地址由-file控制"><a href="#1、功能点挖掘-抓包分析下载地址找到对应代码块，文件下载地址由-file控制" class="headerlink" title="1、功能点挖掘-抓包分析下载地址找到对应代码块，文件下载地址由$file控制"></a>1、功能点挖掘-抓包分析下载地址找到对应代码块，文件下载地址由$file控制</h6><h6 id="2、-file从数据库查询语句得知，追踪可更新或更改此类数据，路由规则访问"><a href="#2、-file从数据库查询语句得知，追踪可更新或更改此类数据，路由规则访问" class="headerlink" title="2、$file从数据库查询语句得知，追踪可更新或更改此类数据，路由规则访问"></a>2、$file从数据库查询语句得知，追踪可更新或更改此类数据，路由规则访问</h6><h6 id="3、尝试修改发现过滤，追踪过滤机制分析绕过，正则过滤，采用全路径地址绕过"><a href="#3、尝试修改发现过滤，追踪过滤机制分析绕过，正则过滤，采用全路径地址绕过" class="headerlink" title="3、尝试修改发现过滤，追踪过滤机制分析绕过，正则过滤，采用全路径地址绕过"></a>3、尝试修改发现过滤，追踪过滤机制分析绕过，正则过滤，采用全路径地址绕过</h6><p>因为文件下载没有特定的函数，所以只能找功能点</p>
+<p>点击下载url跳转到如下</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328125227873.png" alt="image-20230328125227873"></p>
+<p>发现这里是用sql语句通过查询id序号来调出对应的文件</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328130834582.png" alt="image-20230328130834582"></p>
+<p>翻到下面看到$file变量，说明下载什么文件由file决定，找到file第一次出现的地方，发现它是通过上面的sql语句的方法调用文件的</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328131055565.png" alt="image-20230328131055565"></p>
+<p>先跟踪下这个geturl方法，发现是组合完整的url地址的功能，没有什么特别发现</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328131349964.png" alt="image-20230328131349964"></p>
+<p>再跟踪下方法里面的$row,再次回到它的第一次出现的地方，这里getrow方法是执行sql语句功能的</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328131451416.png" alt="image-20230328131451416"></p>
+<p>在数据库中查找到执行这条语句的表，发现in_audio就是对应的文件名，而id就是文件的序号，所以可以知道in_audio这个值代表的是文件</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328133259555.png" alt="image-20230328133259555"></p>
+<p>全局搜索in_audio，发现add.php文件的这个“音频地址”是控制这个变量的，所以去这个add.php文件操作它</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328133611574.png" alt="image-20230328133611574"></p>
+<p>找到这个地方后，写个1.php（这个1.php是里面有的文件，需要填写要查看的文件）</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328134131407.png" alt="image-20230328134131407"></p>
+<p>找到这个文件后进行下载，读取到了内容</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328134301501.png" alt="image-20230328134301501"></p>
+<p>尝试去下载配置文件</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328134400258.png" alt="image-20230328134400258"></p>
+<p>发现路径变成了Safety filter，被过滤了..&#x2F;</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328134446156.png" alt="image-20230328134446156"></p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328134601411.png" alt="image-20230328134601411"></p>
+<p>写绝对路径即可绕过</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328134746684.png" alt="image-20230328134746684"></p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328134805061.png" alt="image-20230328134805061"></p>
+<h4 id="CNVD拿1DAY-删除-amp-读取-amp-写入-梦想CMS"><a href="#CNVD拿1DAY-删除-amp-读取-amp-写入-梦想CMS" class="headerlink" title="#CNVD拿1DAY-删除&amp;读取&amp;写入-梦想CMS"></a>#CNVD拿1DAY-删除&amp;读取&amp;写入-梦想CMS</h4><h5 id="1、文件删除："><a href="#1、文件删除：" class="headerlink" title="1、文件删除："></a>1、文件删除：</h5><p>admin.php?m&#x3D;Backdb&amp;a&#x3D;delbackdb&amp;filename&#x3D;..&#x2F;..&#x2F;1.txt</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328104013658.png"></p>
+<p>到这个文件下搜索关键字unlink，跟踪一下这个delOne方法看看谁调用了它</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328104915561.png" alt="image-20230328104915561"></p>
+<p>找到了两处调用，这里看第一处即可，没有任何过滤，直接输入文件名即可删除</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328105413874.png" alt="image-20230328105413874"></p>
+<p>刚才的delOne代码中删除的是默认路径file&#x2F;back下的，我们尝试去删除这个Install_ok.txt网站，删除后会重装网站这里可以发现file和install目录是同一级目录</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328105646053.png" alt="image-20230328105646053"></p>
+<p>构造路径删除，删除成功</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328110016169.png" alt="image-20230328110016169"></p>
+<p>再次访问install会重新安装</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328110054006.png" alt="image-20230328110054006"></p>
+<h5 id="2、文件读取和写入："><a href="#2、文件读取和写入：" class="headerlink" title="2、文件读取和写入："></a>2、文件读取和写入：</h5><p><code>admin.php?m=Template&amp;a=editfile&amp;dir=../index.php</code></p>
+<p><code>admin.php?m=template&amp;a=editfile&amp;dir=../</code></p>
+<p><code>settemcontent=1&amp;temcontent=&lt;?php phpinfo();?&gt;&amp;filename=1.php</code></p>
+<p>虽然没有指定哪个文件，但是通过这个低危可以判断是存在后台</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328110214794.png" alt="image-20230328110214794"></p>
+<p>先看一下php读取文件的函数有哪些，进行搜索关键字</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328110711681.png" alt="image-20230328110711681"></p>
+<p>这里搜索file_get_contents</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328111014523.png" alt="image-20230328111014523"></p>
+<p>点击进去跳转到这里</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328111154472.png" alt="image-20230328111154472"></p>
+<p>追踪函数被哪个调用，这里点转到”实现“没有反应，所以点查找使用</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328111505370.png" alt="image-20230328111505370"></p>
+<p>找到对应代码</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328111538511.png" alt="image-20230328111538511"></p>
+<p>观察到</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328112027132.png" alt="image-20230328112027132"></p>
+<p>这里不知道”.$dir“前面的是什么路径通过echo处文件的路径，发现前面的config[‘template’]原来是template目录的意思，例如：config[‘template’].abc意思是template&#x2F;abc</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328112316154.png" alt="image-20230328112316154"></p>
+<p>尝试读取db.inc.php文件内容</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328123534170.png" alt="image-20230328123534170"></p>
+<p>这里还有一个漏洞是写入</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328123657725.png" alt="image-20230328123657725"></p>
+<p>跟随这个put方法，发现了调用了写入函数file_put_contents</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328123919688.png" alt="image-20230328123919688"></p>
+<p>在这个编辑里面添加1111</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328123735850.png" alt="image-20230328123735850"></p>
+<p>在代码里面已经被修改了</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328123802622.png" alt="image-20230328123802622"></p>
+<p>还可以另外创建一个新的文件写入内容，因为这个editfile方法里面post提交settemcontent参数的值，如果有这个参数值，那么可以执行修改的功能，构造payload，以post方式提交</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328124507001.png" alt="image-20230328124507001"></p>
+<p>这个temcontent是提交内容的参数</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328124656690.png" alt="image-20230328124656690"></p>
+<p>写入成功</p>
+<p><img src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328124535750.png" alt="image-20230328124535750"></p>
+<h5 id="3、文件上传："><a href="#3、文件上传：" class="headerlink" title="3、文件上传："></a>3、文件上传：</h5><p>找上传点，文件类型后缀设置添加通过</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">pwy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/03/26/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/">http://example.com/2023/03/26/Day82-代码审计-PHP项目-MVC文件安全-上传-包含-下载-删除-读取等/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">ai潼</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328102934488.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/03/26/Day83-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-RCE%E5%AE%89%E5%85%A8-%E8%B0%83%E8%AF%95-%E8%BF%BD%E8%B8%AA-%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/" title="Day83 代码审计-PHP项目&amp;RCE安全&amp;调试&amp;追踪&amp;代码执行&amp;命令执行"><img class="cover" src="/../images/Day83-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-RCE%E5%AE%89%E5%85%A8-%E8%B0%83%E8%AF%95-%E8%BF%BD%E8%B8%AA-%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/image-20230328103159963.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Day83 代码审计-PHP项目&amp;RCE安全&amp;调试&amp;追踪&amp;代码执行&amp;命令执行</div></div></a></div><div class="next-post pull-right"><a href="/2023/03/26/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/" title="Day81 代码审计-PHP项目&amp;MVC注入&amp;CNVD拿1day&amp;SQL监控&amp;动态调试"><img class="cover" src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/1.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Day81 代码审计-PHP项目&amp;MVC注入&amp;CNVD拿1day&amp;SQL监控&amp;动态调试</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tt.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">pwy</div><div class="author-info__description">自律&上进</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">#知识点：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AB%A0%E8%8A%82%E7%82%B9%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">#章节点：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%80%E8%A6%81%E7%82%B9%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">#简要点：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A5%E5%85%85%E7%82%B9%EF%BC%9A"><span class="toc-number"></span> <span class="toc-text">#补充点：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#MVC%E6%A8%A1%E5%9E%8B%EF%BC%9A%E8%A7%81%E4%B8%8A%E5%9B%BE"><span class="toc-number">0.1.</span> <span class="toc-text">-MVC模型：见上图</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E9%85%8D%E7%BD%AE%EF%BC%9AphpStudy-PhpStorm-XDebug"><span class="toc-number">0.2.</span> <span class="toc-text">-动态调试配置：phpStudy + PhpStorm + XDebug</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E5%88%86%E6%9E%90-phpstudy-amp-phpstorm-amp-xdebug"><span class="toc-number">0.3.</span> <span class="toc-text">动态调试分析-phpstudy&amp;phpstorm&amp;xdebug</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#PHP5%E9%85%8D%E7%BD%AE%EF%BC%9A"><span class="toc-number">0.3.1.</span> <span class="toc-text">PHP5配置：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#PHP7%E9%85%8D%E7%BD%AE%EF%BC%9A"><span class="toc-number">0.3.2.</span> <span class="toc-text">PHP7配置：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E4%BB%A3%E7%A0%81%E6%AF%94%E5%AF%B9%E5%B7%A5%E5%85%B7%EF%BC%9ABeyond-Compare-4"><span class="toc-number">0.4.</span> <span class="toc-text">-文件代码比对工具：Beyond Compare 4</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%94%E7%A4%BA%E6%A1%88%E4%BE%8B%EF%BC%9A"><span class="toc-number"></span> <span class="toc-text">演示案例：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95-xhcms"><span class="toc-number">1.</span> <span class="toc-text">#文件安全-文件包含-动态调试-xhcms</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1%E3%80%81%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95-amp-%E5%85%B3%E9%94%AE%E5%AD%97%E6%90%9C%E7%B4%A2-%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B-amp-%E6%BC%8F%E6%B4%9E%E5%87%BD%E6%95%B0%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">1.0.1.</span> <span class="toc-text">1、动态调试&amp;关键字搜索-代码执行流程&amp;漏洞函数关键字</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2%E3%80%81%E8%B0%83%E8%AF%95%E9%A6%96%E9%A1%B5%E5%AF%B9%E5%BA%94%E4%BB%A3%E7%A0%81%EF%BC%8C%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%EF%BC%8C%E5%88%86%E6%9E%90%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B%EF%BC%8C%E6%B5%8B%E8%AF%95%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.0.2.</span> <span class="toc-text">2、调试首页对应代码，修改数据，分析执行流程，测试漏洞</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E6%96%87%E4%BB%B6%E5%88%A0%E9%99%A4-%E5%85%B3%E9%94%AE%E5%AD%97%E6%90%9C%E7%B4%A2-zzzcms"><span class="toc-number">2.</span> <span class="toc-text">#文件安全-文件删除-关键字搜索-zzzcms</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1%E3%80%81%E5%85%B3%E9%94%AE%E5%AD%97%E6%8C%96%E6%8E%98-%E6%96%87%E4%BB%B6%E5%88%A0%E9%99%A4%E6%90%9C%E7%B4%A2%E5%85%B3%E9%94%AE%E5%AD%97unlink-%E5%AF%B9%E5%BA%94%E5%87%BD%E6%95%B0del-file%EF%BC%8C%E6%9F%A5%E7%9C%8B%E8%B0%83%E7%94%A8"><span class="toc-number">2.0.1.</span> <span class="toc-text">1、关键字挖掘-文件删除搜索关键字unlink,对应函数del_file，查看调用</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2%E3%80%81%E5%90%8E%E5%8F%B0delfile%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%EF%BC%8C%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86delfile%E5%87%BD%E6%95%B0%EF%BC%8C%E5%8F%97%E5%8F%82%E6%95%B0%E6%8E%A7%E5%88%B6%EF%BC%8C%E8%BF%9B%E8%A1%8C%E6%B5%8B%E8%AF%95"><span class="toc-number">2.0.2.</span> <span class="toc-text">2、后台delfile函数调用，如何处理delfile函数，受参数控制，进行测试</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3%E3%80%81%E6%9E%84%E9%80%A0Payload-%E7%A1%AE%E5%AE%9A%E8%BF%87%E6%BB%A4-%E9%87%8D%E6%96%B0%E6%9E%84%E9%80%A0Payload-%E9%85%8D%E5%90%88%E9%87%8D%E8%A3%85%E6%9C%BA%E5%88%B6%E5%AE%9E%E7%8E%B0%E9%87%8D%E8%A3%85%E6%BC%8F%E6%B4%9E"><span class="toc-number">2.0.3.</span> <span class="toc-text">3、构造Payload-确定过滤-重新构造Payload-配合重装机制实现重装漏洞</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD-%E5%8A%9F%E8%83%BD%E7%82%B9%E5%AE%9A%E4%BD%8D-earmusic"><span class="toc-number">3.</span> <span class="toc-text">#文件安全-文件下载-功能点定位-earmusic</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1%E3%80%81%E5%8A%9F%E8%83%BD%E7%82%B9%E6%8C%96%E6%8E%98-%E6%8A%93%E5%8C%85%E5%88%86%E6%9E%90%E4%B8%8B%E8%BD%BD%E5%9C%B0%E5%9D%80%E6%89%BE%E5%88%B0%E5%AF%B9%E5%BA%94%E4%BB%A3%E7%A0%81%E5%9D%97%EF%BC%8C%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E5%9C%B0%E5%9D%80%E7%94%B1-file%E6%8E%A7%E5%88%B6"><span class="toc-number">3.0.1.</span> <span class="toc-text">1、功能点挖掘-抓包分析下载地址找到对应代码块，文件下载地址由$file控制</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2%E3%80%81-file%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5%E5%BE%97%E7%9F%A5%EF%BC%8C%E8%BF%BD%E8%B8%AA%E5%8F%AF%E6%9B%B4%E6%96%B0%E6%88%96%E6%9B%B4%E6%94%B9%E6%AD%A4%E7%B1%BB%E6%95%B0%E6%8D%AE%EF%BC%8C%E8%B7%AF%E7%94%B1%E8%A7%84%E5%88%99%E8%AE%BF%E9%97%AE"><span class="toc-number">3.0.2.</span> <span class="toc-text">2、$file从数据库查询语句得知，追踪可更新或更改此类数据，路由规则访问</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3%E3%80%81%E5%B0%9D%E8%AF%95%E4%BF%AE%E6%94%B9%E5%8F%91%E7%8E%B0%E8%BF%87%E6%BB%A4%EF%BC%8C%E8%BF%BD%E8%B8%AA%E8%BF%87%E6%BB%A4%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90%E7%BB%95%E8%BF%87%EF%BC%8C%E6%AD%A3%E5%88%99%E8%BF%87%E6%BB%A4%EF%BC%8C%E9%87%87%E7%94%A8%E5%85%A8%E8%B7%AF%E5%BE%84%E5%9C%B0%E5%9D%80%E7%BB%95%E8%BF%87"><span class="toc-number">3.0.3.</span> <span class="toc-text">3、尝试修改发现过滤，追踪过滤机制分析绕过，正则过滤，采用全路径地址绕过</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CNVD%E6%8B%BF1DAY-%E5%88%A0%E9%99%A4-amp-%E8%AF%BB%E5%8F%96-amp-%E5%86%99%E5%85%A5-%E6%A2%A6%E6%83%B3CMS"><span class="toc-number">4.</span> <span class="toc-text">#CNVD拿1DAY-删除&amp;读取&amp;写入-梦想CMS</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81%E6%96%87%E4%BB%B6%E5%88%A0%E9%99%A4%EF%BC%9A"><span class="toc-number">4.1.</span> <span class="toc-text">1、文件删除：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2%E3%80%81%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%92%8C%E5%86%99%E5%85%A5%EF%BC%9A"><span class="toc-number">4.2.</span> <span class="toc-text">2、文件读取和写入：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3%E3%80%81%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%EF%BC%9A"><span class="toc-number">4.3.</span> <span class="toc-text">3、文件上传：</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/hello-world/" title="Hello World">Hello World</a><time datetime="2023-05-12T15:24:14.066Z" title="发表于 2023-05-12 23:24:14">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day113-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-%E5%86%85%E5%AD%98%E5%8A%A0%E8%BD%BD-API%E5%B0%81%E8%A3%85-UUID%E6%A0%87%E8%AF%86-MAC%E5%9C%B0%E5%9D%80-IPV4%E5%9C%B0%E5%9D%80-%E5%90%84%E8%AF%AD%E8%A8%80/" title="Day113 免杀对抗-内存加载&amp;API封装&amp;UUID标识&amp;MAC地址&amp;IPV4地址&amp;各语言">Day113 免杀对抗-内存加载&amp;API封装&amp;UUID标识&amp;MAC地址&amp;IPV4地址&amp;各语言</a><time datetime="2023-04-27T00:35:05.000Z" title="发表于 2023-04-27 08:35:05">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day112-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%88%86%E7%A6%BB-%E6%97%A0%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0-%E5%9B%BE%E7%89%87%E9%9A%90%E5%86%99-SOCK%E7%AE%A1%E9%81%93-%E5%8F%82%E6%95%B0%E5%8D%8F%E8%AE%AE%E5%8C%96/" title="Day112 免杀对抗-加载器分离&amp;无文件落地&amp;图片隐写&amp;SOCK管道&amp;参数协议化">Day112 免杀对抗-加载器分离&amp;无文件落地&amp;图片隐写&amp;SOCK管道&amp;参数协议化</a><time datetime="2023-04-27T00:34:45.000Z" title="发表于 2023-04-27 08:34:45">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/" title="Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包">Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包</a><time datetime="2023-04-27T00:34:28.000Z" title="发表于 2023-04-27 08:34:28">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day110-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-GO-C-%E5%8F%8DVT%E6%B2%99%E7%9B%92-%E9%80%86%E5%90%91%E8%B0%83%E8%AF%95-%E5%8F%82%E6%95%B0%E5%8A%A0%E8%BD%BD-%E8%B5%84%E6%BA%90%E5%88%86%E7%A6%BB-%E6%B7%B7%E6%B7%86%E5%8A%A0%E5%AF%86/" title="Day110 免杀对抗-GO&amp;C#&amp;反VT沙盒&amp;逆向调试&amp;参数加载&amp;资源分离&amp;混淆加密">Day110 免杀对抗-GO&amp;C#&amp;反VT沙盒&amp;逆向调试&amp;参数加载&amp;资源分离&amp;混淆加密</a><time datetime="2023-04-27T00:34:13.000Z" title="发表于 2023-04-27 08:34:13">2023-04-27</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By pwy</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

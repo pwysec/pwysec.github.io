@@ -1,0 +1,308 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Day81 代码审计-PHP项目&amp;MVC注入&amp;CNVD拿1day&amp;SQL监控&amp;动态调试 | ai潼</title><meta name="author" content="pwy"><meta name="copyright" content="pwy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="#知识点：1、审计漏洞-SQL数据库注入挖掘 1、审计思路-正则搜索&amp;功能追踪&amp;辅助工具 3、审计类型-常规架构&amp;MVC架构&amp;三方框架 #章节点：1、语言审计-PHP&amp;.Net&amp;Java&amp;Python 2、漏洞审计-注入&amp;上传&amp;RCE&amp;未授权等 3、框架审计-ThinkPHP&amp;Spring&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Day81 代码审计-PHP项目&amp;MVC注入&amp;CNVD拿1day&amp;SQL监控&amp;动态调试">
+<meta property="og:url" content="http://example.com/2023/03/26/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/index.html">
+<meta property="og:site_name" content="ai潼">
+<meta property="og:description" content="#知识点：1、审计漏洞-SQL数据库注入挖掘 1、审计思路-正则搜索&amp;功能追踪&amp;辅助工具 3、审计类型-常规架构&amp;MVC架构&amp;三方框架 #章节点：1、语言审计-PHP&amp;.Net&amp;Java&amp;Python 2、漏洞审计-注入&amp;上传&amp;RCE&amp;未授权等 3、框架审计-ThinkPHP&amp;Spring&amp;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/1.png">
+<meta property="article:published_time" content="2023-03-26T04:52:07.000Z">
+<meta property="article:modified_time" content="2023-03-28T02:34:47.546Z">
+<meta property="article:author" content="pwy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/1.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/03/26/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Day81 代码审计-PHP项目&MVC注入&CNVD拿1day&SQL监控&动态调试',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-03-28 10:34:47'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="ai潼" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tt.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/1.png')"><nav id="nav"><span id="blog-info"><a href="/" title="ai潼"><span class="site-name">ai潼</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Day81 代码审计-PHP项目&amp;MVC注入&amp;CNVD拿1day&amp;SQL监控&amp;动态调试</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-03-26T04:52:07.000Z" title="发表于 2023-03-26 12:52:07">2023-03-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-03-28T02:34:47.546Z" title="更新于 2023-03-28 10:34:47">2023-03-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Day81 代码审计-PHP项目&amp;MVC注入&amp;CNVD拿1day&amp;SQL监控&amp;动态调试"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/pagUZrMkLIiCfPwuBasyJA.pngw=1280&h=2355.png" alt="img"></p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/SUyrKNkESntMtTZoJF_1ug.png" alt="img"></p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/tEzlWxoeP5g-Do36-hzyUg.png" alt="img"></p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/svV2OifqoKkYl-SeD_t23A.png" alt="img"></p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/AKvGYf35Uwjg6E6zW4VViw.png" alt="img"></p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/yxdj-PHnHu4asgWDfVZcWg.png" alt="img"></p>
+<h3 id="知识点："><a href="#知识点：" class="headerlink" title="#知识点："></a>#知识点：</h3><p>1、审计漏洞-SQL数据库注入挖掘</p>
+<p>1、审计思路-正则搜索&amp;功能追踪&amp;辅助工具</p>
+<p>3、审计类型-常规架构&amp;MVC架构&amp;三方框架</p>
+<h3 id="章节点："><a href="#章节点：" class="headerlink" title="#章节点："></a>#章节点：</h3><p>1、语言审计-PHP&amp;.Net&amp;Java&amp;Python</p>
+<p>2、漏洞审计-注入&amp;上传&amp;RCE&amp;未授权等</p>
+<p>3、框架审计-ThinkPHP&amp;Spring&amp;Flask等</p>
+<p>4、工具审计-RIPS&amp;VCG&amp;Fortify&amp;Bandit等</p>
+<p>5、技术审计-动静态调试&amp;DAST&amp;SAST&amp;IAST等</p>
+<h3 id="简要点："><a href="#简要点：" class="headerlink" title="#简要点："></a>#简要点：</h3><p>1、代码审计必备知识点：</p>
+<p>环境搭建使用，工具插件安装使用，掌握各种漏洞原理及利用,代码开发类知识点。</p>
+<p>2、代码审计开始前准备：</p>
+<p>审计目标的程序名，版本，当前环境(系统,中间件,脚本语言等信息),各种插件等。</p>
+<p>3、代码审计挖掘漏洞根本：</p>
+<p>可控变量及特定函数，不存在过滤或过滤不严谨存在绕过导致的安全漏洞。</p>
+<p>4、代码审计教学计划：</p>
+<p>审计项目漏洞原理-&gt;审计思路-&gt;完整源码-&gt;应用框架-&gt;验证并利用漏洞。</p>
+<p>5、代码审计教学内容：</p>
+<p>PHP,Java,.NET,Python网站应用，引入框架类开发源码，相关审计工具及插件使用。</p>
+<h3 id="补充点："><a href="#补充点：" class="headerlink" title="#补充点："></a>#补充点：</h3><p>-MVC模型：见上图</p>
+<p>当访问动态网页时，以MVC框架为例，浏览器提交查询到控制器（①），如是动态请求，控制器将对应sql查询送到对应模型（②），由模型和数据库交互得到查询结果返回给控制器（③），最后返回给浏览器（④）。</p>
+<h5 id="动态调试配置：phpStudy-PhpStorm-XDebug"><a href="#动态调试配置：phpStudy-PhpStorm-XDebug" class="headerlink" title="-动态调试配置：phpStudy + PhpStorm + XDebug"></a>-动态调试配置：phpStudy + PhpStorm + XDebug</h5><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/nzjdsds/article/details/100114242">https://blog.csdn.net/nzjdsds/article/details/100114242</a></p>
+<p>1、先确定PHP版本有Xdebug扩展</p>
+<p>2、php.ini配置写入并开启Xdebug</p>
+<p>3、PhpStorm设置端口及IDEY并测试</p>
+<p>4、PhpStorm开启监听并运行断点访问</p>
+<p>在name处断点</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230328093710653.png" alt="image-20230328093710653"></p>
+<p>点这个强制步入可以一直跟踪name的值执行流程和值的变化</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230328093903019.png" alt="image-20230328093903019"></p>
+<h5 id="文件代码比对工具：Beyond-Compare-4"><a href="#文件代码比对工具：Beyond-Compare-4" class="headerlink" title="-文件代码比对工具：Beyond Compare 4"></a>-文件代码比对工具：Beyond Compare 4</h5><blockquote>
+<h3 id="演示案例："><a href="#演示案例：" class="headerlink" title="演示案例："></a>演示案例：</h3><p>​                ➢ 数据库监控-QQ业务源码系统-(无过滤)</p>
+<p>​                ➢ 正则表达式-Bluecms源码系统-(无过滤)	</p>
+<p>​                ➢ CNVD拿1DAY-梦想CMS源码系统-(有过滤)	</p>
+</blockquote>
+<p><strong>代码审计：</strong></p>
+<p><strong>1、搜索相关可能存在漏洞的函数</strong></p>
+<p><strong>2、功能点下手分析代码</strong></p>
+<h4 id="数据库监控-QQ业务源码系统-无过滤"><a href="#数据库监控-QQ业务源码系统-无过滤" class="headerlink" title="#数据库监控-QQ业务源码系统-(无过滤)"></a>#数据库监控-QQ业务源码系统-(无过滤)</h4><p>数据库SQL监控排查可利用语句定向分析     <strong>（一般带where的后面接的就是变量名）</strong></p>
+<p>前面的语句都已经<strong>固定了列名写死了没有变量</strong>，所以不考虑，而只有这个语句的127.0.0.1才有可能可以改变的</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327161213127.png" alt="image-20230327161213127"></p>
+<p>在源码中搜上面这条sql语句，发现如果有like后面的内容127.0.0.1就搜索不到结果</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327161534695.png" alt="image-20230327161534695"></p>
+<p>而只搜索前面的部分就显示有结果了，说明此处ip是变量，127.0.0.1就是变量ip控制的，可以更改，后面可以紧跟一下这个语句</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327161654546.png" alt="image-20230327161654546"></p>
+<p> 打开看到确实是变量ip控制的</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327161756255.png" alt="image-20230327161756255"></p>
+<p>所以紧跟一下这个函数ywdd()，看看是谁调用的这个函数，函数方法要被调用才有用，全局搜索这个函数，发现另一处有调用这个</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327162107003.png" alt="image-20230327162107003"></p>
+<p>进去发现是ywdd包含了getip()这个方法</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327162209199.png" alt="image-20230327162209199"></p>
+<p>点击定位这个函数</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327162254545.png" alt="image-20230327162254545"></p>
+<p>点击去发现HTTP_X_FORWARDED_FOR</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327162501243.png" alt="image-20230327162501243"></p>
+<p>这个在28天<strong>XFF（X-Forwarded-For: 127.0.0.1）</strong>头注入讲过，是一个接收ip的函数,根据上面的ywdd方法里面没有对ip进行过滤的代码，所以断定这个地方有sql注入</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327162412732.png" alt="image-20230327162412732"></p>
+<p>抓包，并且添加一个xff参数，写个1.1.1.1，观察数据库的执行语句，发现也是变成了1.1.1.1，说明变量可控</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327163337049.png" alt="image-20230327163337049"></p>
+<p>构造sql语句，漏洞发掘</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327163542012.png" alt="image-20230327163542012"></p>
+<h4 id="正则表达式-Bluecms源码系统-无过滤"><a href="#正则表达式-Bluecms源码系统-无过滤" class="headerlink" title="#正则表达式-Bluecms源码系统-(无过滤)"></a>#正则表达式-Bluecms源码系统-(无过滤)</h4><p>正则表达式：(update|select|insert|delete|).<em>?where.</em>&#x3D;\</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327164442183.png" alt="image-20230327164442183"></p>
+<p>roder by后面的这种变量是注入不了的，因为这个是对这个里面的数据进行排序DESC是指从大到小排序</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327164715486.png" alt="image-20230327164715486"></p>
+<p>找到刚才的那个地方看到getone，$db执行getone方法，但是这个方法可以判断不是官方的函数，是自己定义的，将$db执行的结果赋值给$ad</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327165436322.png" alt="image-20230327165436322"></p>
+<p>一般语句会这样写，直接执行这个$sql<br><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327165343731.png" alt="image-20230327165343731"></p>
+<p>所以跟踪下这个getone方法，一般只会用到声明和实现，声明就是定义这个函数的地方，而实现就是调用这个函数的地方</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327165131774.png" alt="image-20230327165131774"></p>
+<p>显示$query方法</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327165700819.png" alt="image-20230327165700819"></p>
+<p>如果不确定，可以继续跟踪下，跟踪到了这个方法，基本可以确定刚才的getone就是执行sql语句的方法</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327165739476.png" alt="image-20230327165739476"></p>
+<p>跟踪一下刚才的变量$ad_id，找到它第一次出现的地方，可以看到这个地方没有对变量进行过滤，唯一可能存在过滤的地方就是getone，刚才跟踪了几个和getone相关的也没有发现过滤的语句</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327170038146.png" alt="image-20230327170038146"></p>
+<p>访文变量ad_id存在的文件</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327170439886.png" alt="image-20230327170439886"></p>
+<p>为了调试方便，在这里echo出sql语句</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327170653979.png" alt="image-20230327170653979"></p>
+<p>执行后发现没有结果，无回显？</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327170737042.png" alt="image-20230327170737042"></p>
+<p>看代码分析，因为这里执行了语句后并没有将结果输出</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327170812802.png" alt="image-20230327170812802"></p>
+<p>根据之前的课程，无回显可以采取延时注入</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327171022856.png" alt="image-20230327171022856"></p>
+<p>在sqlmap上跑，发现这三种注入方式（布尔、延时、联合）都可以注入成功</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327171229732.png" alt="image-20230327171229732"></p>
+<h4 id="CNVD拿1DAY-梦想CMS源码系统-有过滤"><a href="#CNVD拿1DAY-梦想CMS源码系统-有过滤" class="headerlink" title="#CNVD拿1DAY-梦想CMS源码系统-(有过滤)"></a>#CNVD拿1DAY-梦想CMS源码系统-(有过滤)</h4><h5 id="1、动态调试技术"><a href="#1、动态调试技术" class="headerlink" title="1、动态调试技术"></a>1、动态调试技术</h5><h5 id="2、文件对比技术"><a href="#2、文件对比技术" class="headerlink" title="2、文件对比技术"></a>2、文件对比技术</h5><h4 id="一、"><a href="#一、" class="headerlink" title="一、"></a>一、</h4><p>漏洞报告url：<a target="_blank" rel="noopener" href="https://www.cnvd.org.cn/flaw/show/CNVD-2020-59466">https://www.cnvd.org.cn/flaw/show/CNVD-2020-59466</a></p>
+<h5 id="梦想CMS后台Bo-cl-php文件存在SQL注入漏洞"><a href="#梦想CMS后台Bo-cl-php文件存在SQL注入漏洞" class="headerlink" title="梦想CMS后台Bo***.cl***.php文件存在SQL注入漏洞"></a>梦想CMS后台Bo***.cl***.php文件存在SQL注入漏洞</h5><p><a target="_blank" rel="noopener" href="http://localhost:8081/lmxcms1.4/admin.php?m=book&a=reply&id=1)%20and%20updatexml(0,concat(0x7e,user()),1)%23">http://localhost:8081/lmxcms1.4/admin.php?m=book&amp;a=reply&amp;id=1)%20and%20updatexml(0,concat(0x7e,user()),1)%23</a></p>
+<p>这里说后台存在注入</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327172559593.png" alt="image-20230327172559593"></p>
+<p>登录后台后点击内容管理</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327172943913.png" alt="image-20230327172943913"></p>
+<p>跳转到这个页面</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327173508247.png" alt="image-20230327173508247"></p>
+<p>在代码中依次找到这个页面的文件所在地</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327173853623.png" alt="image-20230327173853623"></p>
+<p>根据漏洞介绍详细，找到这个文件，并发现了其中的参数id可以传值</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327174145926.png" alt="image-20230327174145926"></p>
+<p>跟踪上面标记的调用参数id的getReply方法,发现selectModel调用这个id，这里id传值给了$param</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327174650200.png" alt="image-20230327174650200"></p>
+<p>跟踪selectModel后，发现selectDB调用这个$param，并且通过$this-&gt;field可以发现param传值给了field<img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327174759807.png" alt="image-20230327174759807"></p>
+<p>最终在selectDB方法里面找到了sql语句的地方,这里恰恰就是查询参数$field的地方，<strong>所以上述传值过程是$id-&gt;$param-&gt;$field</strong>,而且这里分析过来发现是<strong>没有过滤的</strong>，这里为了调试在下面输入echo $sql打印出sql语句</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327175019484.png" alt="image-20230327175019484"></p>
+<p>所以访问最开始的reply方法的地方，这里构造url时m&#x3D;Book，忽略后面的统一标志Action.class.php,id随便输入一个</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327180129836.png" alt="image-20230327180129836"></p>
+<p>通过上图可以发现没有回显，所以可以考虑报错注入，延时注入也行，这里报错回显成功</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327180629558.png" alt="image-20230327180629558"></p>
+<h4 id="二、"><a href="#二、" class="headerlink" title="二、"></a>二、</h4><p><a target="_blank" rel="noopener" href="https://www.cnvd.org.cn/flaw/show/CNVD-2019-05674">https://www.cnvd.org.cn/flaw/show/CNVD-2019-05674</a></p>
+<h5 id="LmxCMS-V1-4前台Ta-cl-php存在SQL注入漏洞"><a href="#LmxCMS-V1-4前台Ta-cl-php存在SQL注入漏洞" class="headerlink" title="LmxCMS V1.4前台Ta***.cl***.php存在SQL注入漏洞"></a>LmxCMS V1.4前台Ta***.cl***.php存在SQL注入漏洞</h5><p>前台的</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327180945816.png" alt="image-20230327180945816"></p>
+<p>根据上图的漏洞介绍找到这个文件，只在这个文件里面发现了两个变量，一个data，一个name，而这里显示name是从data过来的，所以追踪data 的方法p</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327181430293.png" alt="image-20230327181430293"></p>
+<p>从这里可以知道前面的data 是用GET方法接收参数的，而且这个地方有过滤</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327182703546.png" alt="image-20230327182703546"></p>
+<p>跟踪一下filter_sql，看看过滤哪些，发现是正则匹配，基本上都过滤了包括大小写</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327183143065.png" alt="image-20230327183143065"></p>
+<p>这个参数想要直接注入就行不通了，找另一个，刚才的name参数</p>
+<p>浏览器的解码机制，只会解码一次</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327184406893.png" alt="image-20230327184406893"></p>
+<p>例如：</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327184800901.png" alt="image-20230327184800901"></p>
+<p>这个地方出现漏洞的问题就是他将数据又进行了一次解码，而且，这个编码发生在数据传送到浏览器通过以后才进行解码，导致了可以双重编码绕过</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230327185418013.png" alt="image-20230327185418013"></p>
+<blockquote>
+<p>上述的第1处，例如构造语句a’ and updatexml(0,concat(0x7e,user()),1)#，编码一次后，浏览器因为优先接收数据，会将其还原为原来的sql语句，导致过滤函数识别到了，所以无法绕过，但是二次编码后，浏览器解码一次后变成：%27%20and%20updatexml%280%2Cconcat%280x7e%2Cuser%28%29%29%2C1%29%23，随后，过滤机制检测，发现这个一次编码里面没有sql语句和敏感函数就放行，放行后经过第2处的urldecode的解码效果，变成了：a’ and updatexml(0,concat(0x7e,user()),1)#，从而这个语句被数据库接收，产生了注入</p>
+</blockquote>
+<p>随后跟踪一下这个获取name的方法getNnameData</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230328090137130.png" alt="image-20230328090137130"></p>
+<p>跟踪过去发现了有sql语句，参数传值，name将值传给了param继续跟踪一下oneModel方法</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230328090248837.png" alt="image-20230328090248837"></p>
+<p>oneModel里面又有oneDB方法，param将值传给了field，继续跟踪oneDB</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230328090353740.png" alt="image-20230328090353740"></p>
+<p>发现了最终的sql语句，打印一下sql语句</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230328090655685.png" alt="image-20230328090655685"></p>
+<p>因为最终在还是name传值过来的，所以输入payload为?m&#x3D;Tags&amp;name&#x3D;1（随便输入一个数字）</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230328091131991.png" alt="image-20230328091131991"></p>
+<p>观察到是单引号，所以闭合单引号构造语句并且双重编码</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230328091508589.png" alt="image-20230328091508589"></p>
+<p>无论是不编码还是编码一次，都无法绕过检测</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230328091620962.png" alt="image-20230328091620962"></p>
+<h4 id="如果，没有上面的漏洞介绍，不告诉你漏洞是在哪个文件呢？思路：找到其出了漏洞后更新后的版本，两个版本的文件进行对比，看看都有哪个文件进行了更改，代码哪个地方进行了修改（工具Beyond-Compare-4）这个方式，可以用来挖0day或者1day"><a href="#如果，没有上面的漏洞介绍，不告诉你漏洞是在哪个文件呢？思路：找到其出了漏洞后更新后的版本，两个版本的文件进行对比，看看都有哪个文件进行了更改，代码哪个地方进行了修改（工具Beyond-Compare-4）这个方式，可以用来挖0day或者1day" class="headerlink" title="如果，没有上面的漏洞介绍，不告诉你漏洞是在哪个文件呢？思路：找到其出了漏洞后更新后的版本，两个版本的文件进行对比，看看都有哪个文件进行了更改，代码哪个地方进行了修改（工具Beyond Compare 4）这个方式，可以用来挖0day或者1day"></a>如果，没有上面的漏洞介绍，不告诉你漏洞是在哪个文件呢？思路：找到其出了漏洞后更新后的版本，两个版本的文件进行对比，看看都有哪个文件进行了更改，代码哪个地方进行了修改（工具Beyond Compare 4）这个方式，可以用来挖0day或者1day</h4><h6 id="对比1-4与1-41文件代码不同更方便-Beyond-Compare-4"><a href="#对比1-4与1-41文件代码不同更方便-Beyond-Compare-4" class="headerlink" title="对比1.4与1.41文件代码不同更方便-Beyond Compare 4"></a>对比1.4与1.41文件代码不同更方便-Beyond Compare 4</h6><p><a target="_blank" rel="noopener" href="http://localhost:8081/lmxcms1.4/?m=tags&name=%2561%2527%2520%2561%256e%2564%2520%2575%2570%2564%2561%2574%2565%2578%256d%256c%2528%2530%252c%2563%256f%256e%2563%2561%2574%2528%2530%2578%2537%2565%252c%2575%2573%2565%2572%2528%2529%2529%252c%2531%2529%2523">http://localhost:8081/lmxcms1.4/?m=tags&amp;name=%25%36%31%25%32%37%25%32%30%25%36%31%25%36%65%25%36%34%25%32%30%25%37%35%25%37%30%25%36%34%25%36%31%25%37%34%25%36%35%25%37%38%25%36%64%25%36%63%25%32%38%25%33%30%25%32%63%25%36%33%25%36%66%25%36%65%25%36%33%25%36%31%25%37%34%25%32%38%25%33%30%25%37%38%25%33%37%25%36%35%25%32%63%25%37%35%25%37%33%25%36%35%25%37%32%25%32%38%25%32%39%25%32%39%25%32%63%25%33%31%25%32%39%25%32%33</a></p>
+<p>例如可以看到，刚才的漏洞，两个版本一对比，发现把这个地方修复了，右边修复的版本增加了过滤</p>
+<p><img src="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/image-20230328092726862.png" alt="image-20230328092726862"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">pwy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/03/26/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/">http://example.com/2023/03/26/Day81-代码审计-PHP项目-MVC注入-CNVD拿1day-SQL监控-动态调试/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">ai潼</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/../images/Day81-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%B3%A8%E5%85%A5-CNVD%E6%8B%BF1day-SQL%E7%9B%91%E6%8E%A7-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/1.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/03/26/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/" title="Day82 代码审计-PHP项目&amp;MVC文件安全&amp;上传&amp;包含&amp;下载&amp;删除&amp;读取等"><img class="cover" src="/../images/Day82-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-PHP%E9%A1%B9%E7%9B%AE-MVC%E6%96%87%E4%BB%B6%E5%AE%89%E5%85%A8-%E4%B8%8A%E4%BC%A0-%E5%8C%85%E5%90%AB-%E4%B8%8B%E8%BD%BD-%E5%88%A0%E9%99%A4-%E8%AF%BB%E5%8F%96%E7%AD%89/image-20230328102934488.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Day82 代码审计-PHP项目&amp;MVC文件安全&amp;上传&amp;包含&amp;下载&amp;删除&amp;读取等</div></div></a></div><div class="next-post pull-right"><a href="/2023/03/23/Day80-WAF%E6%94%BB%E9%98%B2-%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8-HPP%E6%B1%A1%E6%9F%93-%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93-%E5%9E%83%E5%9C%BE%E6%95%B0%E6%8D%AE/" title="Day80 WAF攻防-漏洞利用&amp;HPP污染&amp;分块传输&amp;垃圾数据"><img class="cover" src="http://mms0.baidu.com/it/u=750344444,2704042529&amp;fm=253&amp;app=138&amp;f=JPEG&amp;fmt=auto&amp;q=75?w=705&amp;h=500" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Day80 WAF攻防-漏洞利用&amp;HPP污染&amp;分块传输&amp;垃圾数据</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tt.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">pwy</div><div class="author-info__description">自律&上进</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">#知识点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%A0%E8%8A%82%E7%82%B9%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">#章节点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E8%A6%81%E7%82%B9%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">#简要点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A5%E5%85%85%E7%82%B9%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">#补充点：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E9%85%8D%E7%BD%AE%EF%BC%9AphpStudy-PhpStorm-XDebug"><span class="toc-number">4.0.1.</span> <span class="toc-text">-动态调试配置：phpStudy + PhpStorm + XDebug</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E4%BB%A3%E7%A0%81%E6%AF%94%E5%AF%B9%E5%B7%A5%E5%85%B7%EF%BC%9ABeyond-Compare-4"><span class="toc-number">4.0.2.</span> <span class="toc-text">-文件代码比对工具：Beyond Compare 4</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%94%E7%A4%BA%E6%A1%88%E4%BE%8B%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">演示案例：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%91%E6%8E%A7-QQ%E4%B8%9A%E5%8A%A1%E6%BA%90%E7%A0%81%E7%B3%BB%E7%BB%9F-%E6%97%A0%E8%BF%87%E6%BB%A4"><span class="toc-number">5.1.</span> <span class="toc-text">#数据库监控-QQ业务源码系统-(无过滤)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F-Bluecms%E6%BA%90%E7%A0%81%E7%B3%BB%E7%BB%9F-%E6%97%A0%E8%BF%87%E6%BB%A4"><span class="toc-number">5.2.</span> <span class="toc-text">#正则表达式-Bluecms源码系统-(无过滤)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CNVD%E6%8B%BF1DAY-%E6%A2%A6%E6%83%B3CMS%E6%BA%90%E7%A0%81%E7%B3%BB%E7%BB%9F-%E6%9C%89%E8%BF%87%E6%BB%A4"><span class="toc-number">5.3.</span> <span class="toc-text">#CNVD拿1DAY-梦想CMS源码系统-(有过滤)</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF"><span class="toc-number">5.3.1.</span> <span class="toc-text">1、动态调试技术</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2%E3%80%81%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94%E6%8A%80%E6%9C%AF"><span class="toc-number">5.3.2.</span> <span class="toc-text">2、文件对比技术</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E3%80%81"><span class="toc-number">5.4.</span> <span class="toc-text">一、</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A2%A6%E6%83%B3CMS%E5%90%8E%E5%8F%B0Bo-cl-php%E6%96%87%E4%BB%B6%E5%AD%98%E5%9C%A8SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E"><span class="toc-number">5.4.1.</span> <span class="toc-text">梦想CMS后台Bo***.cl***.php文件存在SQL注入漏洞</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%8C%E3%80%81"><span class="toc-number">5.5.</span> <span class="toc-text">二、</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#LmxCMS-V1-4%E5%89%8D%E5%8F%B0Ta-cl-php%E5%AD%98%E5%9C%A8SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E"><span class="toc-number">5.5.1.</span> <span class="toc-text">LmxCMS V1.4前台Ta***.cl***.php存在SQL注入漏洞</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%EF%BC%8C%E6%B2%A1%E6%9C%89%E4%B8%8A%E9%9D%A2%E7%9A%84%E6%BC%8F%E6%B4%9E%E4%BB%8B%E7%BB%8D%EF%BC%8C%E4%B8%8D%E5%91%8A%E8%AF%89%E4%BD%A0%E6%BC%8F%E6%B4%9E%E6%98%AF%E5%9C%A8%E5%93%AA%E4%B8%AA%E6%96%87%E4%BB%B6%E5%91%A2%EF%BC%9F%E6%80%9D%E8%B7%AF%EF%BC%9A%E6%89%BE%E5%88%B0%E5%85%B6%E5%87%BA%E4%BA%86%E6%BC%8F%E6%B4%9E%E5%90%8E%E6%9B%B4%E6%96%B0%E5%90%8E%E7%9A%84%E7%89%88%E6%9C%AC%EF%BC%8C%E4%B8%A4%E4%B8%AA%E7%89%88%E6%9C%AC%E7%9A%84%E6%96%87%E4%BB%B6%E8%BF%9B%E8%A1%8C%E5%AF%B9%E6%AF%94%EF%BC%8C%E7%9C%8B%E7%9C%8B%E9%83%BD%E6%9C%89%E5%93%AA%E4%B8%AA%E6%96%87%E4%BB%B6%E8%BF%9B%E8%A1%8C%E4%BA%86%E6%9B%B4%E6%94%B9%EF%BC%8C%E4%BB%A3%E7%A0%81%E5%93%AA%E4%B8%AA%E5%9C%B0%E6%96%B9%E8%BF%9B%E8%A1%8C%E4%BA%86%E4%BF%AE%E6%94%B9%EF%BC%88%E5%B7%A5%E5%85%B7Beyond-Compare-4%EF%BC%89%E8%BF%99%E4%B8%AA%E6%96%B9%E5%BC%8F%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%94%A8%E6%9D%A5%E6%8C%960day%E6%88%96%E8%80%851day"><span class="toc-number">5.6.</span> <span class="toc-text">如果，没有上面的漏洞介绍，不告诉你漏洞是在哪个文件呢？思路：找到其出了漏洞后更新后的版本，两个版本的文件进行对比，看看都有哪个文件进行了更改，代码哪个地方进行了修改（工具Beyond Compare 4）这个方式，可以用来挖0day或者1day</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%AF%B9%E6%AF%941-4%E4%B8%8E1-41%E6%96%87%E4%BB%B6%E4%BB%A3%E7%A0%81%E4%B8%8D%E5%90%8C%E6%9B%B4%E6%96%B9%E4%BE%BF-Beyond-Compare-4"><span class="toc-number">5.6.0.1.</span> <span class="toc-text">对比1.4与1.41文件代码不同更方便-Beyond Compare 4</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/12/hello-world/" title="Hello World">Hello World</a><time datetime="2023-05-12T15:24:14.066Z" title="发表于 2023-05-12 23:24:14">2023-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day113-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-%E5%86%85%E5%AD%98%E5%8A%A0%E8%BD%BD-API%E5%B0%81%E8%A3%85-UUID%E6%A0%87%E8%AF%86-MAC%E5%9C%B0%E5%9D%80-IPV4%E5%9C%B0%E5%9D%80-%E5%90%84%E8%AF%AD%E8%A8%80/" title="Day113 免杀对抗-内存加载&amp;API封装&amp;UUID标识&amp;MAC地址&amp;IPV4地址&amp;各语言">Day113 免杀对抗-内存加载&amp;API封装&amp;UUID标识&amp;MAC地址&amp;IPV4地址&amp;各语言</a><time datetime="2023-04-27T00:35:05.000Z" title="发表于 2023-04-27 08:35:05">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day112-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%88%86%E7%A6%BB-%E6%97%A0%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0-%E5%9B%BE%E7%89%87%E9%9A%90%E5%86%99-SOCK%E7%AE%A1%E9%81%93-%E5%8F%82%E6%95%B0%E5%8D%8F%E8%AE%AE%E5%8C%96/" title="Day112 免杀对抗-加载器分离&amp;无文件落地&amp;图片隐写&amp;SOCK管道&amp;参数协议化">Day112 免杀对抗-加载器分离&amp;无文件落地&amp;图片隐写&amp;SOCK管道&amp;参数协议化</a><time datetime="2023-04-27T00:34:45.000Z" title="发表于 2023-04-27 08:34:45">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day111-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-Java-ASM-%E6%B1%87%E7%BC%96CS%E8%B0%83%E7%94%A8-%E5%86%85%E8%81%94C-MSF%E6%BA%90%E7%A0%81%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9-Jar%E6%89%93%E5%8C%85/" title="Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包">Day111 免杀对抗-Java&amp;ASM&amp;汇编CS调用&amp;内联C&amp;MSF源码特征修改&amp;Jar打包</a><time datetime="2023-04-27T00:34:28.000Z" title="发表于 2023-04-27 08:34:28">2023-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/27/Day110-%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97-GO-C-%E5%8F%8DVT%E6%B2%99%E7%9B%92-%E9%80%86%E5%90%91%E8%B0%83%E8%AF%95-%E5%8F%82%E6%95%B0%E5%8A%A0%E8%BD%BD-%E8%B5%84%E6%BA%90%E5%88%86%E7%A6%BB-%E6%B7%B7%E6%B7%86%E5%8A%A0%E5%AF%86/" title="Day110 免杀对抗-GO&amp;C#&amp;反VT沙盒&amp;逆向调试&amp;参数加载&amp;资源分离&amp;混淆加密">Day110 免杀对抗-GO&amp;C#&amp;反VT沙盒&amp;逆向调试&amp;参数加载&amp;资源分离&amp;混淆加密</a><time datetime="2023-04-27T00:34:13.000Z" title="发表于 2023-04-27 08:34:13">2023-04-27</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By pwy</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
